@@ -19,6 +19,7 @@ import ApplicationMenuContext from './context/applicationMenu/ApplicationMenuCon
 import { getMenusByActionURL } from './lib/utils';
 const Auth = React.lazy(() => import('@/screens/auth/Layout'));
 const SignIn = React.lazy(() => import('@/screens/auth/Signin'));
+const Practice = React.lazy(() => import('@/screens/main/Practice/Practice'))
 function App() {
   const { rawMenus } = useAppMenu(ApplicationMenuContext)
   const router = createBrowserRouter([
@@ -32,6 +33,10 @@ function App() {
         },
       ]
     },
+    {
+      path:'practice',
+      element: <Practice/>
+    }
    
    
   ])

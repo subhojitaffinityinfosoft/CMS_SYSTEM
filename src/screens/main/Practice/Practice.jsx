@@ -1,5 +1,5 @@
 import { FaTools } from 'react-icons/fa'
-import { useTheme } from '../../components/theme-provider'
+import { useTheme } from '../../../components/theme-provider'
 
 const AppLoader = ({ background }) => {
   const { theme } = useTheme()
