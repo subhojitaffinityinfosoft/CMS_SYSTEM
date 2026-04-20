@@ -6,6 +6,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import {
   isSidebarItemActive,
   isSidebarLinkDisabled,
+  renderSidebarIcon,
 } from "@/components/constants/sidebar-data";
 import {
   SidebarGroup,
@@ -27,7 +28,6 @@ export function NavSecondary({ items = [], ...props }) {
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            const ItemIcon = item.icon;
             const isActive = isSidebarItemActive(pathname, item);
             const isDisabled = isSidebarLinkDisabled(item);
 
@@ -40,13 +40,13 @@ export function NavSecondary({ items = [], ...props }) {
                     disabled
                     className="opacity-70"
                   >
-                    {ItemIcon && <ItemIcon />}
+                    {renderSidebarIcon(item.icon)}
                     <span>{item.title}</span>
                   </SidebarMenuButton>
                 ) : (
                   <SidebarMenuButton asChild isActive={isActive}>
                     <NavLink to={item.url}>
-                      {ItemIcon && <ItemIcon />}
+                      {renderSidebarIcon(item.icon)}
                       <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>

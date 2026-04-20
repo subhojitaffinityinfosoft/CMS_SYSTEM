@@ -1,5 +1,4 @@
 "use client";
-
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -8,10 +7,12 @@ import {
   isSidebarItemActive,
   isSidebarItemClickable,
   isSidebarLinkDisabled,
+  renderSidebarIcon,
 } from "@/components/constants/sidebar-data";
 import {
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -21,11 +22,9 @@ import {
 } from "@/components/ui/sidebar";
 
 function MenuButtonContent({ item }) {
-  const ItemIcon = item.icon;
-
   return (
     <>
-      {ItemIcon && <ItemIcon />}
+      {renderSidebarIcon(item.icon)}
       <span>{item.title}</span>
     </>
   );
@@ -48,6 +47,7 @@ export function NavMain({ items = [] }) {
 
   return (
     <SidebarGroup>
+      <SidebarGroupLabel>Navigation</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {

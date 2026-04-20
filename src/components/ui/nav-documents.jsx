@@ -10,6 +10,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import {
   isSidebarItemActive,
   isSidebarLinkDisabled,
+  renderSidebarIcon,
 } from "@/components/constants/sidebar-data";
 import {
   DropdownMenu,
@@ -40,7 +41,6 @@ export function NavDocuments({ items = [] }) {
       <SidebarGroupLabel>Documents</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          const ItemIcon = item.icon;
           const isActive = isSidebarItemActive(pathname, item);
           const isDisabled = isSidebarLinkDisabled(item);
 
@@ -53,13 +53,13 @@ export function NavDocuments({ items = [] }) {
                   disabled
                   className="opacity-70"
                 >
-                  {ItemIcon && <ItemIcon />}
+                  {renderSidebarIcon(item.icon)}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
               ) : (
                 <SidebarMenuButton asChild isActive={isActive}>
                   <NavLink to={item.url}>
-                    {ItemIcon && <ItemIcon />}
+                    {renderSidebarIcon(item.icon)}
                     <span>{item.title}</span>
                   </NavLink>
                 </SidebarMenuButton>

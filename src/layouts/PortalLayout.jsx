@@ -128,18 +128,24 @@ const PortalLayout = () => {
         "--header-height": "calc(var(--spacing) * 16)",
       }}
     >
-      <AppSidebar variant="inset" sidebarData={sidebarData} />
-      <SidebarInset>
+      <AppSidebar
+        sidebarData={sidebarData}
+        footerProps={{
+          currentSession: finYear || defaultSession?.value || "",
+          onLogout: handleLogout,
+          onSessionChange: handleSessionChange,
+          onSettingsClick: handleSettingsClick,
+          portalName: portal.label,
+          sessionOptions,
+          setTheme,
+          theme: getResolvedTheme(theme),
+          user: currentUser,
+        }}
+      />
+      <SidebarInset className="rounded-none border-0 shadow-none">
         <SiteHeader
-          currentSession={finYear || defaultSession?.value || ""}
-          onLogout={handleLogout}
-          onSessionChange={handleSessionChange}
-          onSettingsClick={handleSettingsClick}
           pageTitle={pageTitle}
           portalName={portal.label}
-          sessionOptions={sessionOptions}
-          setTheme={setTheme}
-          theme={getResolvedTheme(theme)}
           user={currentUser}
         />
         <div className="flex flex-1 flex-col bg-muted/20">

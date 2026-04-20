@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BookOpenTextIcon,
   Building2Icon,
@@ -71,7 +72,11 @@ const getSortValue = (item = {}, fallback = Number.MAX_SAFE_INTEGER) =>
   fallback;
 
 export const resolveSidebarIcon = (icon) => {
-  if (typeof icon === "function") {
+  if (React.isValidElement(icon)) {
+    return icon;
+  }
+
+  if (typeof icon === "function" || (typeof icon === "object" && icon !== null)) {
     return icon;
   }
 
@@ -80,6 +85,20 @@ export const resolveSidebarIcon = (icon) => {
   }
 
   return FALLBACK_ICON;
+};
+
+export const renderSidebarIcon = (icon, props = {}) => {
+  if (!icon) {
+    return null;
+  }
+
+  if (React.isValidElement(icon)) {
+    return icon;
+  }
+
+  const Icon = resolveSidebarIcon(icon);
+
+  return React.createElement(Icon, props);
 };
 
 export const isExternalSidebarUrl = (url = "") => EXTERNAL_LINK_PATTERN.test(url);
@@ -294,6 +313,6 @@ export const createPortalSidebarData = ({
     navMain: buildSidebarMenus({ menus, pathname }),
     documents: [],
     navSecondary: [],
-    showFooterUser: false,
+    showFooterUser: true,
   };
 };
