@@ -1,10 +1,3 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import PortalLayout from "@/layouts/PortalLayout";
 
-const Layout = () => {
-  return (
-    <Outlet/>
-  )
-}
-
-export default Layout
+export default PortalLayout;

@@ -1,8 +1,7 @@
 export default {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
     'postcss-preset-mantine': {},
+
     'postcss-simple-vars': {
       variables: {
         'mantine-breakpoint-xs': '36em',
@@ -12,5 +11,10 @@ export default {
         'mantine-breakpoint-xl': '88em',
       },
     },
+
+    'postcss-nested': {},   // ✅ REQUIRED (this is the missing piece)
+
+    tailwindcss: {},        // ✅ AFTER mantine + nested
+    autoprefixer: {},
   },
-}
+};
