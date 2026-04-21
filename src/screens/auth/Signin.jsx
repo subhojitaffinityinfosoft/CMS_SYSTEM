@@ -70,8 +70,6 @@ export default function PremiumLogin() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
-
-      {/* 🌄 BACKGROUND IMAGE */}
       <motion.img
         key={role}
         src={roleData[role].image}
@@ -81,13 +79,10 @@ export default function PremiumLogin() {
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* 🌫 LIGHT GRADIENT OVERLAY */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/40 to-transparent backdrop-blur-sm" />
 
-      {/* 🔥 MAIN CONTAINER */}
       <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-2 gap-10 items-center px-4">
 
-        {/* 🔥 LEFT CONTENT (DYNAMIC) */}
         <motion.div
           key={role}
           initial={{ opacity: 0, x: -30 }}

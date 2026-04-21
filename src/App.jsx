@@ -3,6 +3,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { CompanyProvider } from './context/companyDetails/CompanyProvider';
 import { ToastProvider } from './components/ui/toast';
 import { Toaster } from './components/ui/toaster';
 import StorageContextProvider from './context/storage/StorageContextProvider';
@@ -83,7 +84,6 @@ function App() {
       ]
     },
   ])
-
   return (
     <>
       <StorageContextProvider>
@@ -92,9 +92,11 @@ function App() {
           <AccountContextProvider>
             <FinancialYearContextProvider>
               {/* <ApplicationMenuContextProvider> */}
-              <Suspense fallback={<AppLoader background="bg-background" />}>
-                <RouterProvider router={router} />
-              </Suspense>
+              <CompanyProvider>
+                <Suspense fallback={<AppLoader background="bg-background" />}>
+                  <RouterProvider router={router} />
+                </Suspense>
+              </CompanyProvider>
               {/* </ApplicationMenuContextProvider> */}
             </FinancialYearContextProvider>
           </AccountContextProvider>

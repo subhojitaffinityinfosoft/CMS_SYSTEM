@@ -1,9 +1,5 @@
 import { FaTools } from 'react-icons/fa'
-import { useTheme } from '../../components/theme-provider'
-
 const AppLoader = ({ background }) => {
-  const { theme } = useTheme()
-
   return (
     <div
       className={`fixed top-0 min-h-screen min-w-full z-50 flex items-center flex-col justify-center gap-3 ${
