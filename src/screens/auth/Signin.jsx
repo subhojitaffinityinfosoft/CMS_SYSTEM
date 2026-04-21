@@ -2,11 +2,9 @@ import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-
 import {
   Form,
   FormControl,
@@ -15,18 +13,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-
 import { Eye, EyeOff, Shield, GraduationCap, User } from "lucide-react"
 import { motion } from "framer-motion"
 
-/* ------------------ VALIDATION ------------------ */
 const loginSchema = z.object({
   userName: z.string().min(1, "Username required"),
   password: z.string().min(1, "Password required"),
   userType: z.string().default("admin"),
 })
 
-/* ------------------ DATA ------------------ */
 const tabs = [
   { value: "admin", label: "Admin", icon: Shield },
   { value: "teacher", label: "Teacher", icon: GraduationCap },

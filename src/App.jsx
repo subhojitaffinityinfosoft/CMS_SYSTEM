@@ -53,7 +53,7 @@ function App() {
           ]
         },
         {
-          path: 'admin-outlet',
+          path: 'outlet',
           element: <AdminLayout />,
           children: [
             {
@@ -64,23 +64,22 @@ function App() {
               path: '*',
               element: <PortalPlaceholder />
             },
+            {
+              path: 'teacher-outlet',
+              element: <TeacherOutlet />,
+              children: [
+                {
+                  index: true,
+                  element: <TeacherDashboard />
+                },
+                {
+                  path: '*',
+                  element: <PortalPlaceholder />
+                },
+              ]
+            },
           ]
         },
-        {
-          path: 'teacher-outlet',
-          element: <TeacherOutlet />,
-          children: [
-            {
-              index: true,
-              element: <TeacherDashboard />
-            },
-            {
-              path: '*',
-              element: <PortalPlaceholder />
-            },
-          ]
-        },
-
       ]
     },
   ])

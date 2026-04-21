@@ -1,30 +1,58 @@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-
+import { NavUser } from "@/components/ui/nav-user";
+import { Input } from "@/components/ui/input";
+import { Bell } from "lucide-react";
+import { useTheme } from "../theme-provider";
 export function SiteHeader({
   pageTitle = "Dashboard",
   portalName = "Portal",
   user,
 }) {
+  const { theme, setTheme } = useTheme();
+
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:px-6">
-      <div className="flex min-w-0 items-center gap-3">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="hidden h-4 sm:block" />
-        <div className="min-w-0">
-          <p className="truncate text-xs uppercase tracking-[0.24em] text-muted-foreground">
-            {portalName}
+    <header className="flex w-full items-center justify-between">
+
+      {/* 🔥 LEFT */}
+      <div className="flex items-center gap-3">
+        <div className="leading-tight">
+          <p className="text-sm font-semibold text-primary">
+            {user?.companyName || "Company Name"}
           </p>
-          <h1 className="truncate text-lg font-semibold text-foreground">
-            Welcome, {user.name}
-          </h1>
+          <p className="text-xs text-muted-foreground">
+            {user?.unitName || portalName}
+          </p>
         </div>
       </div>
 
-      <Badge variant="outline" className="hidden border-dashed px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
-        {pageTitle}
-      </Badge>
+      {/* 🔥 RIGHT */}
+      <div className="flex items-center gap-4">
+
+        {/* PAGE */}
+        <Badge
+          variant="outline"
+          className="hidden md:inline-flex border-primary/30 text-primary"
+        >
+          {pageTitle}
+        </Badge>
+
+        {/* NOTIFICATION */}
+        <button className="relative">
+          <Bell className="w-5 h-5 text-muted-foreground hover:text-primary" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+        </button>
+
+        {/* USER */}
+        <NavUser
+          user={user}
+          portalName={portalName}
+          onLogout={() => console.log("logout")}
+          setTheme={setTheme}
+          theme={theme}
+        />
+      </div>
     </header>
   );
 }
