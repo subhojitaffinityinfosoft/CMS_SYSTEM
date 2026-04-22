@@ -118,7 +118,7 @@ const CallApi = async (flag, api_name, payload, headers, params, bypassLog, sign
 
 }
 
-const CarrerCallApi = async (flag, api_name, payload, headers, params) => {
+const CallApiWithStatic = async (flag, api_name, payload, headers, params) => {
     try {
         const auth_headers = {
             'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBRE1JTiIsInRva2Vua2V5IjoiQURNSU4iLCJkYXRhIjoiWStxTitYK3pMaEtzTklnSHo4blpKQ1UvWWd4ZEFoY2E0NktrZHhFR29JNU5mVHVZRTBoZEVxYkJFMTFGSFpNdndqL0dmTktIVUZjTmRPdmFla25qY1hUdzNDMzJaWk40eENERzczR0JXVDBZMVMzRUxtbCswVFdtMFJZZTlkVko2eDVDcVVNUE5VRGpDSXZsUEk2VFJyczJjVGZlOWlzdjBZTDJBMDdXNXRuRmFrRHZIN1MwOEcxN2tKSHRyUlBTSHFyRW13dEZDNll1a2NkQWdJeFRyWmZFUHQwQlZ1Rm51Tk9NUndXYjJPSHlobWNMZEg5OUhtdkllMlpyYkVsYm03NnpoVkFEQkNmNVJVUTZYQVcvKzgxK1E2bjBQNEM2b0VBcS9Mc0RRMzY0ODNKdi9CRVlVQ2w1R0c5SW43aDczRnJQVUhjTEkvcjdhNmdEYzh6Z0VRPT0iLCJqdGkiOiI3YzEwNGUxYi0yMzg3LTQ3YWEtOTI2Yy03MjQ1YWFlNzNkYzIiLCJleHAiOjE3NTczMjg3NDksImlzcyI6InRlc3QuY29tIiwiYXVkIjoidGVzdC5jb20ifQ.B_xJVWbGQYX2AuN8ZHUOB2zA0uZVa1sA6FfrL3h9ywo`,
@@ -159,4 +159,4 @@ const CarrerCallApi = async (flag, api_name, payload, headers, params) => {
 
 export default CallApi;
 
-export { CarrerCallApi };
+export { CallApiWithStatic };
