@@ -22,7 +22,7 @@ export const menuData = [
   {
     id: 1,
     menu_name: "HOME",
-    link: "/",
+    link: "/dashboard",
     icon: Home,
     group: 1, // main menu position
     active: true,

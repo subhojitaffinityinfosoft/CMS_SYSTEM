@@ -282,11 +282,11 @@ function convertNumberToWords(amount) {
   return result;
 }
 
-export const getMenusByActionURL = (actionURL,rawMenus) =>{
+export const getMenusByActionURL = (link,rawMenus) =>{
     try{
       console.log(rawMenus);
-      console.log(actionURL);
-      const menuDtls = rawMenus?.find(el => el.actionUrl == actionURL);
+      console.log(link);
+      const menuDtls = rawMenus?.find(el => el.link == link);
       console.log(menuDtls);
       return menuDtls;
     }

@@ -2,6 +2,7 @@ import React from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
+  redirect
 } from "react-router-dom";
 import { CompanyProvider } from './context/companyDetails/CompanyProvider';
 import { ToastProvider } from './components/ui/toast';
@@ -11,8 +12,11 @@ import { Suspense } from 'react';
 import AppLoader from './components/ux/AppLoader';
 import AccountContextProvider from './context/account/AccountCOntextProvider';
 import FinancialYearContextProvider from './context/financialYear/FinancialYearCOntextProvider';
+import { getMenusByActionURL } from './lib/utils';
+import { menuData as rawMenus } from './components/constants/dummy_data';
 const Auth = React.lazy(() => import('@/screens/auth/Layout'));
 const SignIn = React.lazy(() => import('@/screens/auth/Signin'));
+const BadRequest = React.lazy(() => import('@/screens/errorPage/404-bad-request'))
 const MainLayout = React.lazy(() => import('@/layouts/MainLayout'))
 const Practice = React.lazy(() => import('@/screens/main/Practice/Practice'))
 const StudentLayout = React.lazy(() => import('./layouts/Studentlayout'));
@@ -20,7 +24,7 @@ const StudentDashboard = React.lazy(() => import('@/screens/main/student/dashboa
 const AdminLayout = React.lazy(() => import('@/layouts/AdminLayout'));
 const AdminDashboard = React.lazy(() => import('@/screens/main/admin/dashboard/index'));
 const TeacherOutlet = React.lazy(() => import('@/layouts/TeacherLayout'));
-const TeacherDashboard = React.lazy(() => import('@/screens/main/teacher/dashboard/index'))
+const TeacherDashboard = React.lazy(() => import('@/screens/main/teacher/dashboard/index'));
 const PortalPlaceholder = React.lazy(() => import('@/screens/main/shared/PortalPlaceholder'));
 
 function App() {
@@ -36,6 +40,10 @@ function App() {
       ]
     },
     {
+      path: '404-bad-request',
+      element: <BadRequest />
+    },
+    {
       path: 'practice',
       element: <Practice />
     },
@@ -44,17 +52,26 @@ function App() {
       element: <MainLayout />,
       children: [
         {
-          path: 'student',
+          path: '/student',
           element: <StudentLayout />,
           children: [
             {
               index: true,
-              element: <StudentDashboard />
+              element: <StudentDashboard />,
+              loader: ({ request }) => {
+                const url = new URL(request.url);
+                const data = getMenusByActionURL(url.pathname, rawMenus)
+                console.log(data)
+                if (!data) {
+                  return redirect("/404-bad-request");
+                }
+                return data ? data : null
+              },
             },
           ]
         },
         {
-          path: 'outlet',
+          path: '/teacher',
           element: <AdminLayout />,
           children: [
             {
