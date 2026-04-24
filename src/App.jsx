@@ -71,7 +71,7 @@ function App() {
           ]
         },
         {
-          path: '/teacher',
+          path: '/outlet',
           element: <AdminLayout />,
           children: [
             {

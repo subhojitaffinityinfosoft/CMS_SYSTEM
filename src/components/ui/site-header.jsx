@@ -5,13 +5,14 @@ import { NavUser } from "@/components/ui/nav-user";
 import { Input } from "@/components/ui/input";
 import { Bell } from "lucide-react";
 import { useTheme } from "../theme-provider";
+import { useNavigate } from "react-router-dom";
 export function SiteHeader({
   pageTitle = "Dashboard",
   portalName = "Portal",
   user,
 }) {
   const { theme, setTheme } = useTheme();
-
+  const navigate = useNavigate()
   return (
     <header className="flex w-full items-center justify-between">
 
@@ -48,7 +49,10 @@ export function SiteHeader({
         <NavUser
           user={user}
           portalName={portalName}
-          onLogout={() => console.log("logout")}
+          onLogout={() => {
+            localStorage.clear();
+            navigate('/')
+          }}
           setTheme={setTheme}
           theme={theme}
         />

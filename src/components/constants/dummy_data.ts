@@ -29,6 +29,15 @@ export const menuData = [
     sub_menu: []
   },
   {
+    id: 1,
+    menu_name: "STUDENT HOME",
+    link: "/student",
+    icon: Home,
+    group: 1, // main menu position
+    active: true,
+    sub_menu: []
+  },
+  {
     id: 2,
     menu_name: "ABOUT",
     link: "",

@@ -9,14 +9,17 @@ import {
     DropdownMenuTrigger,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-
+import { useNavigate } from "react-router-dom";
 const StudentNav = () => {
     const { theme, setTheme } = useTheme();
     const [sessionOpen, setSessionOpen] = useState(false);
-
+const navigate = useNavigate()
     const sessions = ["2022-23", "2023-24", "2024-25"];
     const currentSession = "2024-25";
-
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate("/");
+    };
     return (
         <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
 
@@ -95,7 +98,7 @@ const StudentNav = () => {
                                 Change Password
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem className="text-red-500">
+                            <DropdownMenuItem className="text-red-500" onClick={handleLogout}>
                                 <LogOut className="mr-2 h-4 w-4" />
                                 Logout
                             </DropdownMenuItem>

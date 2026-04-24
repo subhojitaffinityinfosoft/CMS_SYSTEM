@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
@@ -15,7 +16,8 @@ import {
 } from "@/components/ui/form"
 import { Eye, EyeOff, Shield, GraduationCap, User } from "lucide-react"
 import { motion } from "framer-motion"
-
+import { Usersdata } from './UserMaster'
+import { EncryptText, SetStorage } from '@/lib/Storage';
 const loginSchema = z.object({
   userName: z.string().min(1, "Username required"),
   password: z.string().min(1, "Password required"),
@@ -47,9 +49,9 @@ const roleData = {
 }
 
 export default function PremiumLogin() {
+  const navigate = useNavigate()
   const [role, setRole] = useState("admin")
   const [show, setShow] = useState(false)
-
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -65,8 +67,29 @@ export default function PremiumLogin() {
   }
 
   const onSubmit = (data) => {
-    console.log("FINAL DATA:", data)
-  }
+    console.log("LOGIN DATA:", data);
+    console.log(Usersdata)
+    const user = Usersdata.find((u) => u.username === data.userName && u.password === data.password && u.userType === data.userType);
+    console.log(user)
+    if (!user) {
+      alert("Invalid credentials");
+      return;
+    }
+
+    console.log("LOGGED USER:", user);
+
+    SetStorage(import.meta.env.VITE_USER_TYPE, EncryptText(user.userType));
+    SetStorage(import.meta.env.VITE_ROLE, EncryptText(user.role));
+    SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(user.subRole));
+
+    if (user.userType === "admin") {
+      navigate('./outlet')
+    } else if (user.userType === "teacher") {
+      navigate('./outlet/teacher-outlet');
+    } else {
+      navigate('./student');
+    }
+  };
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
