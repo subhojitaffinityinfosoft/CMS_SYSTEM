@@ -25,5 +25,4 @@ const AppLoader = ({ background }) => {
     </div>
   )
 }
-
 export default AppLoader
