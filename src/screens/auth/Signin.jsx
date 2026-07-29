@@ -32,19 +32,22 @@ const tabs = [
 
 const roleData = {
   admin: {
-    title: "Admin Control",
-    subtitle: "Manage system & users efficiently",
-    image: "https://images.unsplash.com/photo-1556157382-97eda2d62296",
+    title: "Admin Control Center",
+    subtitle: "Manage the entire platform securely and efficiently.",
+    image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80", // Dark tech workspace
+    features: ["System configuration", "User management", "Security protocols"]
   },
   teacher: {
     title: "Teacher Workspace",
-    subtitle: "Organize classes & monitor students",
-    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7",
+    subtitle: "Organize your classes, materials, and monitor growth.",
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80", // Moody bookshelves/library
+    features: ["Class attendance", "Upload materials", "Student progress"]
   },
   student: {
     title: "Student Portal",
-    subtitle: "Access your learning resources",
-    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644",
+    subtitle: "Access all your learning resources in one place.",
+    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80", // Open book/study focus
+    features: ["Learning modules", "Grades & results", "Peer connection"]
   },
 }
 
