@@ -1,28 +1,12 @@
 import React, { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Eye, EyeOff, Shield, GraduationCap, User } from "lucide-react"
+import { Shield, GraduationCap, User } from "lucide-react"
 import { motion } from "framer-motion"
 import { Usersdata } from './UserMaster'
-import { EncryptText, SetStorage } from '@/lib/Storage';
-const loginSchema = z.object({
-  userName: z.string().min(1, "Username required"),
-  password: z.string().min(1, "Password required"),
-  userType: z.string().default("admin"),
-})
+import { EncryptText, SetStorage } from '@/lib/Storage'
+import FormComponent from "@/components/ux/FormComponent"
 
 const tabs = [
   { value: "admin", label: "Admin", icon: Shield },
@@ -34,68 +18,79 @@ const roleData = {
   admin: {
     title: "Admin Control Center",
     subtitle: "Manage the entire platform securely and efficiently.",
-    image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80", // Dark tech workspace
-    features: ["System configuration", "User management", "Security protocols"]
+    image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80",
   },
   teacher: {
     title: "Teacher Workspace",
     subtitle: "Organize your classes, materials, and monitor growth.",
-    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80", // Moody bookshelves/library
-    features: ["Class attendance", "Upload materials", "Student progress"]
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80",
   },
   student: {
     title: "Student Portal",
     subtitle: "Access all your learning resources in one place.",
-    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80", // Open book/study focus
-    features: ["Learning modules", "Grades & results", "Peer connection"]
+    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80",
   },
 }
 
 export default function PremiumLogin() {
   const navigate = useNavigate()
   const [role, setRole] = useState("admin")
-  const [show, setShow] = useState(false)
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      userName: "",
-      password: "",
-      userType: "admin",
+
+  // 1. Define your dynamic form fields array
+  const loginFormConfig = [
+    {
+      acceseriesKey: "userName",
+      label: "Username",
+      placeholder: "Enter username",
+      type: "input",
+      validation: z.string().min(1, "*Username is required"),
     },
-  })
+    {
+      acceseriesKey: "password",
+      label: "Password",
+      placeholder: "********",
+      type: "password",
+      validation: z.string().min(1, "*Password is required"),
+    },
+  ]
 
   const handleTabChange = (val) => {
     setRole(val)
-    form.setValue("userType", val)
   }
 
-  const onSubmit = (data) => {
-    console.log("LOGIN DATA:", data);
-    console.log(Usersdata)
-    const user = Usersdata.find((u) => u.username === data.userName && u.password === data.password && u.userType === data.userType);
-    console.log(user)
+  // 2. Handle form submission
+  const onSubmit = (formData) => {
+    // Merge selected tab role with inputs
+    const data = { ...formData, userType: role }
+
+    console.log("LOGIN DATA:", data)
+    const user = Usersdata.find(
+      (u) => u.username === data.userName && u.password === data.password && u.userType === data.userType
+    )
+
     if (!user) {
-      alert("Invalid credentials");
-      return;
+      alert("Invalid credentials")
+      return
     }
 
-    console.log("LOGGED USER:", user);
+    console.log("LOGGED USER:", user)
 
-    SetStorage(import.meta.env.VITE_USER_TYPE, EncryptText(user.userType));
-    SetStorage(import.meta.env.VITE_ROLE, EncryptText(user.role));
-    SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(user.subRole));
+    SetStorage(import.meta.env.VITE_USER_TYPE, EncryptText(user.userType))
+    SetStorage(import.meta.env.VITE_ROLE, EncryptText(user.role))
+    SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(user.subRole))
 
     if (user.userType === "admin") {
       navigate('./outlet')
     } else if (user.userType === "teacher") {
-      navigate('./outlet/teacher-outlet');
+      navigate('./outlet/teacher-outlet')
     } else {
-      navigate('./student');
+      navigate('./student')
     }
-  };
+  }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
+      {/* Background Image */}
       <motion.img
         key={role}
         src={roleData[role].image}
@@ -108,83 +103,36 @@ export default function PremiumLogin() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/40 to-transparent backdrop-blur-sm" />
 
       <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-2 gap-10 items-center px-4">
-
+        {/* LEFT COLUMN - ROLE DETAILS */}
         <motion.div
           key={role}
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           className="space-y-6 hidden lg:block"
         >
-          <h1 className="text-4xl font-bold text-gray-900">
-            General College
-          </h1>
-
-          <h2 className="text-2xl font-semibold text-gray-800">
-            {roleData[role].title}
-          </h2>
-
-          <p className="text-gray-700 text-lg">
-            {roleData[role].subtitle}
-          </p>
-
-          <div className="space-y-2 text-gray-600">
-            {role === "admin" && (
-              <>
-                <p>✔ Manage users & system</p>
-                <p>✔ Control access & permissions</p>
-                <p>✔ Monitor full platform</p>
-              </>
-            )}
-
-            {role === "teacher" && (
-              <>
-                <p>✔ Manage classes & attendance</p>
-                <p>✔ Upload study materials</p>
-                <p>✔ Track student progress</p>
-              </>
-            )}
-
-            {role === "student" && (
-              <>
-                <p>✔ Access learning resources</p>
-                <p>✔ View results & attendance</p>
-                <p>✔ Stay connected with teachers</p>
-              </>
-            )}
-          </div>
+          <h1 className="text-4xl font-bold text-gray-900">General College</h1>
+          <h2 className="text-2xl font-semibold text-gray-800">{roleData[role].title}</h2>
+          <p className="text-gray-700 text-lg">{roleData[role].subtitle}</p>
         </motion.div>
 
-        {/* 🔥 RIGHT LOGIN CARD */}
+        {/* RIGHT LOGIN CARD */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          className="
-          w-full max-w-md ml-auto
-          rounded-2xl p-8
-          bg-white/40 backdrop-blur-xl
-          border border-white/30
-          shadow-xl
-          text-gray-900
-        "
+          className="w-full max-w-md ml-auto rounded-2xl p-8 bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl text-gray-900"
         >
-          {/* 🔥 CARD HEADER */}
+          {/* CARD HEADER */}
           <div className="text-center mb-6 space-y-2">
             <div className="flex justify-center">
               <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                 GC
               </div>
             </div>
-
-            <h2 className="text-2xl font-semibold">
-              General College
-            </h2>
-
-            <p className="text-gray-600 text-sm">
-              Sign in to your account
-            </p>
+            <h2 className="text-2xl font-semibold">General College</h2>
+            <p className="text-gray-600 text-sm">Sign in to your account</p>
           </div>
 
-          {/* Tabs */}
+          {/* ROLE SELECTOR TABS */}
           <Tabs value={role} onValueChange={handleTabChange}>
             <TabsList className="grid grid-cols-3 h-14 p-1 rounded-xl bg-white/60 gap-2">
               {tabs.map((tab) => {
@@ -193,12 +141,7 @@ export default function PremiumLogin() {
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="
-                    flex items-center justify-center gap-2 rounded-lg px-2 py-1 text-sm font-medium
-                    text-gray-600 hover:text-black
-                    data-[state=active]:!bg-primary
-                    data-[state=active]:!text-white
-                  "
+                    className="flex items-center justify-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-600 hover:text-black data-[state=active]:!bg-primary data-[state=active]:!text-white"
                   >
                     <Icon className="w-4 h-4" />
                     {tab.label}
@@ -208,68 +151,14 @@ export default function PremiumLogin() {
             </TabsList>
           </Tabs>
 
-          {/* FORM */}
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-6 text-xl">
-
-              <FormField
-                control={form.control}
-                name="userName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium text-gray-800">Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter username"
-                        className="bg-white/70 border-gray-300"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium text-gray-800">Password</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type={show ? "text" : "password"}
-                          placeholder="********"
-                          className="pr-10 bg-white/70 border-gray-300"
-                        />
-                      </FormControl>
-
-                      <span
-                        onClick={() => setShow(!show)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black cursor-pointer"
-                      >
-                        {show ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </span>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                variant="default"
-                className="w-full font-semibold text-base h-11 rounded-lg shadow-md"
-              >
-                Sign In
-              </Button>
-            </form>
-          </Form>
+          {/* 🔥 DYNAMIC FORM COMPONENT REPLACING MANUAL FORM FIELDS */}
+          <FormComponent
+            formField={loginFormConfig}
+            onSubmit={onSubmit}
+            submitBtnText="Sign In"
+          />
         </motion.div>
-
       </div>
     </div>
   )
-
 }
