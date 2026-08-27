@@ -208,14 +208,7 @@ td[rowspan] {
 
 
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
+
 .header-center {
   justify-content: center!important;
 }

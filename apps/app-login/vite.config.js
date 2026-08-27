@@ -14,9 +14,7 @@ const sharedDependencies = [
   "react",
   "react-dom",
   "react-router-dom",
-  "shared-ui",
-  "shared-core",
-  "shared-api",
+  "recharts"
 ];
 
 export default defineConfig({

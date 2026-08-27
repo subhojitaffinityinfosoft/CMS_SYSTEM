@@ -12,10 +12,12 @@ import { useTheme } from "@/components/theme-provider";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import { SiteHeader } from "@/components/ui/site-header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 import {
     useAccount,
     useAppMenu,
     useFinancialYear,
+    useCompany
 } from "shared-core";
 import StorageContext from "shared-core/context/storage/StorageContext";
 import { getStorageData, removeItemFromStorage } from "@/lib/Storage";
@@ -49,6 +51,7 @@ const AdminLayout = () => {
     const { appMenus } = useAppMenu();
     const { finYear, setFinancialYear, setFinancialYearDtls } = useFinancialYear();
     const { setAuthenticatedKey } = useContext(StorageContext);
+    const { config } = useCompany();
 
     const portal = React.useMemo(() => getPortalConfig(location.pathname), [location.pathname]);
     const sessionOptions = React.useMemo(() => buildPortalSessionOptions(), []);
@@ -62,8 +65,7 @@ const AdminLayout = () => {
         }
     }, [defaultSession, finYear, setFinancialYear, setFinancialYearDtls]);
 
-    const companyName =
-        getStorageData(import.meta.env.VITE_COMP_NAME) || portal.companyFallback;
+    const companyName = config?.companyName || getStorageData(import.meta.env.VITE_COMP_NAME) || portal.companyFallback;
     const currentUser = React.useMemo(
         () => createPortalUser({ user: acc_dtls, portal, companyName }),
         [acc_dtls, companyName, portal]
@@ -148,14 +150,16 @@ return (
 <SidebarInset className="flex flex-col h-screen">
 
   {/* 🔥 STICKY HEADER */}
-<div className="sticky top-0 z-40 flex items-center h-14 px-4 border-b bg-background w-full">
-    <SidebarTrigger className="mr-2 p-2 rounded-md hover:bg-muted" />
-
-    <SiteHeader
-      pageTitle={pageTitle}
-      portalName={portal.label}
-      user={currentUser}
-    />
+  <div className="sticky top-0 z-40 flex items-center gap-2 h-14 px-4 border-b bg-background w-full">
+    <SidebarTrigger className="-ml-1 p-2 rounded-md hover:bg-muted" />
+    <Separator orientation="vertical" className="h-4" />
+    <div className="flex-1 min-w-0">
+      <SiteHeader
+        pageTitle={pageTitle}
+        portalName={portal.label}
+        user={currentUser}
+      />
+    </div>
   </div>
 
   {/* 🔥 SCROLLABLE CONTENT */}

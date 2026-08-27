@@ -24,12 +24,12 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "mfe_admin",
+      name: "mfe_student",
       filename: "remoteEntry.js",
       exposes: {
         "./StudentDashboard": "./src/student/dashboard/index.jsx",
       },
-      shared: ["react", "react-dom", "react-router-dom"],
+      shared: ["react", "react-dom", "react-router-dom", "recharts"],
     }),
   ],
 resolve: {

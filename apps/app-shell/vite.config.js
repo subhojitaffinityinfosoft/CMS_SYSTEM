@@ -26,7 +26,7 @@ export default defineConfig({
         mfe_teacher: "http://localhost:5002/assets/remoteEntry.js",
         mfe_student: "http://localhost:5003/assets/remoteEntry.js",
       },
-      shared: ["react", "react-dom", "react-router-dom"],
+      shared: ["react", "react-dom", "react-router-dom", "recharts"],
     }),
   ],
 resolve: {

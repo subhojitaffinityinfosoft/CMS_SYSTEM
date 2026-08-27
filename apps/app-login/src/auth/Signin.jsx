@@ -2,8 +2,8 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Shield, GraduationCap, User } from "lucide-react"
-import { motion } from "framer-motion"
+import { Shield, GraduationCap, User, AlertCircle } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Usersdata } from './UserMaster'
 import { EncryptText, SetStorage } from '@/lib/Storage'
 import FormComponent from "@/components/ux/FormComponent"
@@ -35,6 +35,7 @@ const roleData = {
 export default function PremiumLogin() {
   const navigate = useNavigate()
   const [role, setRole] = useState("admin")
+  const [loginError, setLoginError] = useState(null)
 
   // 1. Define your dynamic form fields array
   const loginFormConfig = [
@@ -56,6 +57,7 @@ export default function PremiumLogin() {
 
   const handleTabChange = (val) => {
     setRole(val)
+    setLoginError(null)
   }
 
   // 2. Handle form submission
@@ -63,28 +65,29 @@ export default function PremiumLogin() {
     // Merge selected tab role with inputs
     const data = { ...formData, userType: role }
 
-    console.log("LOGIN DATA:", data)
     const user = Usersdata.find(
       (u) => u.username === data.userName && u.password === data.password && u.userType === data.userType
     )
 
     if (!user) {
-      alert("Invalid credentials")
+      setLoginError("Invalid credentials. Please check your username and password.")
       return
     }
 
-    console.log("LOGGED USER:", user)
+    setLoginError(null)
 
+    // Store encrypted user session data
     SetStorage(import.meta.env.VITE_USER_TYPE, EncryptText(user.userType))
     SetStorage(import.meta.env.VITE_ROLE, EncryptText(user.role))
     SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(user.subRole))
 
+    // Navigate to the correct dashboard based on user type
     if (user.userType === "admin") {
-      navigate("/admin-outlet")
+      navigate("/admin/dashboard")
     } else if (user.userType === "teacher") {
-      navigate("/teacher-outlet")
+      navigate("/teacher/dashboard")
     } else {
-      navigate("/student")
+      navigate("/student/dashboard")
     }
   }
 
@@ -150,6 +153,21 @@ export default function PremiumLogin() {
               })}
             </TabsList>
           </Tabs>
+
+          {/* Error Message */}
+          <AnimatePresence>
+            {loginError && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                className="flex items-center gap-2 mt-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm"
+              >
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{loginError}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* 🔥 DYNAMIC FORM COMPONENT REPLACING MANUAL FORM FIELDS */}
           <FormComponent

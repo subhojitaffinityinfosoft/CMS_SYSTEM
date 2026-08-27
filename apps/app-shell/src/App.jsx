@@ -29,6 +29,10 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       {
+        index: true,
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
         path: "dashboard",
         element: (
           <Suspense fallback={<AppLoader />}>
@@ -43,6 +47,10 @@ const router = createBrowserRouter([
     element: <TeacherLayout />,
     children: [
       {
+        index: true,
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
         path: "dashboard",
         element: (
           <Suspense fallback={<AppLoader />}>
@@ -56,6 +64,10 @@ const router = createBrowserRouter([
     path: "/student",
     element: <StudentLayout />,
     children: [
+      {
+        index: true,
+        element: <Navigate to="dashboard" replace />,
+      },
       {
         path: "dashboard",
         element: (

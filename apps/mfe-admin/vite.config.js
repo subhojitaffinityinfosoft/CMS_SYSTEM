@@ -13,9 +13,7 @@ const sharedDependencies = [
   "react",
   "react-dom",
   "react-router-dom",
-  "shared-ui",
-  "shared-core",
-  "shared-api",
+  "recharts"
 ];
 
 export default defineConfig({
@@ -38,7 +36,7 @@ export default defineConfig({
       name: "mfe_admin",
       filename: "remoteEntry.js",
       exposes: {
-        "./Dashboard": "./src/admin/dashboard/index.jsx",
+        "./AdminDashboard": "./src/admin/dashboard/index.jsx",
       },
       shared: sharedDependencies,
     }),

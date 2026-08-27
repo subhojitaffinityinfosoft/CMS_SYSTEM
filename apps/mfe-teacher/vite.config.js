@@ -10,11 +10,22 @@ const sharedUiSrc = path.resolve(workspaceRoot, "packages/shared-ui/src");
 const sharedCoreSrc = path.resolve(workspaceRoot, "packages/shared-core/src");
 const sharedApiSrc = path.resolve(workspaceRoot, "packages/shared-api/src");
 
+const sharedDependencies = [
+  "react",
+  "react-dom",
+  "react-router-dom",
+  "recharts"
+];
+
 export default defineConfig({
+  envDir: workspaceRoot,
   server: {
     port: 5002,
     strictPort: true,
     cors: true,
+    fs: {
+      allow: [workspaceRoot],
+    },
   },
   preview: {
     port: 5002,
@@ -24,12 +35,12 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "mfe_admin",
+      name: "mfe_teacher",
       filename: "remoteEntry.js",
       exposes: {
         "./TeacherDashboard": "./src/teacher/dashboard/index.jsx",
       },
-      shared: ["react", "react-dom", "react-router-dom"],
+      shared: sharedDependencies,
     }),
   ],
   resolve: {
@@ -42,8 +53,6 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
-    modulePreload: false,
-    minify: false,
-    cssCodeSplit: false,
+    chunkSizeWarningLimit: 1800,
   },
-});
+});

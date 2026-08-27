@@ -10,6 +10,7 @@ import {
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { useCompany } from "shared-core";
 const StudentNav = () => {
     const { theme, setTheme } = useTheme();
     const [sessionOpen, setSessionOpen] = useState(false);
@@ -20,6 +21,9 @@ const navigate = useNavigate()
         localStorage.clear();
         navigate("/");
     };
+    const { config } = useCompany();
+    const companyName = config?.companyName || "ABC College";
+
     return (
         <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
 
@@ -34,7 +38,7 @@ const navigate = useNavigate()
 
                     <div className="leading-tight">
                         <h1 className="text-sm font-semibold text-primary">
-                            ABC College
+                            {companyName}
                         </h1>
                         <p className="text-[11px] text-muted-foreground">
                             Student Portal
