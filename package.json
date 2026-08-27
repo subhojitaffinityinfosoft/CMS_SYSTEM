@@ -7,8 +7,16 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present"
+    "dev": "npm run dev:mf",
+    "dev:mf": "concurrently -n shell,login,admin,teacher,student -c blue,magenta,green,yellow,cyan \"npm -w app-shell run dev\" \"npm -w app-login run dev\" \"npm -w mfe-admin run dev\" \"npm -w mfe-teacher run dev\" \"npm -w mfe-student run dev\"",
+    "dev:shell": "npm -w app-shell run dev",
+    "dev:login": "npm -w app-login run dev",
+    "dev:admin": "npm -w mfe-admin run dev",
+    "dev:teacher": "npm -w mfe-teacher run dev",
+    "dev:student": "npm -w mfe-student run dev",
+    "dev:legacy": "vite",
+    "build": "npm run build --workspaces --if-present",
+    "build:mf": "npm -w app-login run build && npm -w mfe-admin run build && npm -w mfe-teacher run build && npm -w mfe-student run build && npm -w app-shell run build"
   },
   "dependencies": {
     "@ag-media/react-pdf-table": "^1.0.1",
@@ -89,10 +97,12 @@
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
+    "@originjs/vite-plugin-federation": "^1.4.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
+    "concurrently": "^10.0.5",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",

@@ -1,24 +1,58 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import federation from '@originjs/vite-plugin-federation';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import federation from "@originjs/vite-plugin-federation";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const appDir = path.dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = path.resolve(appDir, "../..");
+const sharedUiSrc = path.resolve(workspaceRoot, "packages/shared-ui/src");
+const sharedCoreSrc = path.resolve(workspaceRoot, "packages/shared-core/src");
+const sharedApiSrc = path.resolve(workspaceRoot, "packages/shared-api/src");
+const sharedDependencies = [
+  "react",
+  "react-dom",
+  "react-router-dom",
+  "shared-ui",
+  "shared-core",
+  "shared-api",
+];
 
 export default defineConfig({
+  envDir: workspaceRoot,
   server: {
-    port: 5001,         // <-- Set specific port here (5001 for Admin, 5002 for Teacher, etc.)
-    strictPort: true,   // <-- Prevents Vite from auto-switching to 5002 if 5001 is busy
+    port: 5001,
+    strictPort: true,
+    cors: true,
+    fs: {
+      allow: [workspaceRoot],
+    },
+  },
+  preview: {
+    port: 5001,
+    strictPort: true,
   },
   plugins: [
     react(),
     federation({
-      name: 'mfe_admin',
-      filename: 'remoteEntry.js',
+      name: "mfe_admin",
+      filename: "remoteEntry.js",
       exposes: {
-        './Dashboard': './src/dashboard/index.jsx'
+        "./Dashboard": "./src/admin/dashboard/index.jsx",
       },
-      shared: ['react', 'react-dom', 'shared-ui', 'shared-api', 'shared-core']
-    })
+      shared: sharedDependencies,
+    }),
   ],
+  resolve: {
+    alias: [
+      { find: "@", replacement: sharedUiSrc },
+      { find: /^shared-ui\/(.*)$/, replacement: `${sharedUiSrc}/$1` },
+      { find: /^shared-core\/(.*)$/, replacement: `${sharedCoreSrc}/$1` },
+      { find: /^shared-api\/(.*)$/, replacement: `${sharedApiSrc}/$1` },
+    ],
+  },
   build: {
-    target: 'esnext'
-  }
+    target: "esnext",
+    chunkSizeWarningLimit: 1800,
+  },
 });

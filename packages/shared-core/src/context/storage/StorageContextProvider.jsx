@@ -1,6 +1,6 @@
 import  React, {useState} from 'react';
 import StorageContext from './StorageContext';
-import { getStorageData } from '@/lib/Storage';
+import { getStorageData } from 'shared-ui/lib/Storage';
 
 const StorageContextProvider = ({children}) =>{
     const [has_authenticated_key,setAuthenticatedKey] = useState(
@@ -15,4 +15,4 @@ const StorageContextProvider = ({children}) =>{
 }
 
 export default StorageContextProvider;
-export const useLoader = () => React.useContext(StorageContext);
+export const useStorage = () => React.useContext(StorageContext);

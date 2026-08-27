@@ -12,10 +12,12 @@ import { useTheme } from "@/components/theme-provider";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import { SiteHeader } from "@/components/ui/site-header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { useAccount } from "@/context/account/AccountContextProvider";
-import { useAppMenu } from "@/context/applicationMenu/ApplicationMenuContextProvider";
-import { useFinancialYear } from "@/context/financialYear/FinancialYearContextProvider";
-import StorageContext from "@/context/storage/StorageContext";
+import {
+    useAccount,
+    useAppMenu,
+    useFinancialYear,
+} from "shared-core";
+import StorageContext from "shared-core/context/storage/StorageContext";
 import { getStorageData, removeItemFromStorage } from "@/lib/Storage";
 
 const storageKeysToClear = [

@@ -4,6 +4,8 @@ module.exports = {
   content: [
     './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
+    './apps/**/*.{html,js,jsx,ts,tsx}',
+    './packages/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
     container: {

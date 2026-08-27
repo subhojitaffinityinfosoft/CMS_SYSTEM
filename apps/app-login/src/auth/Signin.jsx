@@ -80,11 +80,11 @@ export default function PremiumLogin() {
     SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(user.subRole))
 
     if (user.userType === "admin") {
-      navigate('./outlet')
+      navigate("/admin-outlet")
     } else if (user.userType === "teacher") {
-      navigate('./outlet/teacher-outlet')
+      navigate("/teacher-outlet")
     } else {
-      navigate('./student')
+      navigate("/student")
     }
   }
 

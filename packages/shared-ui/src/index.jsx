@@ -1,5 +1,4 @@
-// Export Theme Utilities
-export * from './lib/theme';
+// Export theme provider
 export * from './components/theme-provider';
 
 // Export UI Components (Add others as needed based on your components/ui folder)

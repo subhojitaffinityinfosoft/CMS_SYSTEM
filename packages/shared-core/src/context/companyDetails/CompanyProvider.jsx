@@ -1,11 +1,11 @@
-import { createContext, useEffect, useState } from "react";
-import CallApi from "@/services/dbIntr";
+import { createContext, useContext, useEffect, useState } from "react";
+import CallApi from "shared-api/services/dbIntr";
 import {
   applyTheme,
   getStoredConfig,
   setStoredConfig,
-} from "@/lib/theme";
-import AppLoader from "@/components/ux/AppLoader";
+} from "../../lib/theme";
+import AppLoader from "shared-ui/components/ux/AppLoader";
 
 export const AppContext = createContext();
 
@@ -53,3 +53,5 @@ export const CompanyProvider = ({ children }) => {
     </AppContext.Provider>
   );
 };
+
+export const useCompany = () => useContext(AppContext);

@@ -1,7 +1,7 @@
-import { useToast } from "@/components/ui/use-toast";
-import AppLoader from "@/components/ux/AppLoader";
-import LoaderContext from "@/context/loader/LoaderContext";
-import { getStorageData } from "@/lib/Storage";
+import { useToast } from "shared-ui/components/ui/use-toast";
+import AppLoader from "shared-ui/components/ux/AppLoader";
+import LoaderContext from "shared-core/context/loader/LoaderContext";
+import { getStorageData } from "shared-ui/lib/Storage";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 const BASE_URL = import.meta.env.VITE_API_URL;

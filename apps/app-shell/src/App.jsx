@@ -4,48 +4,36 @@ import {
   RouterProvider,
   redirect
 } from "react-router-dom";
-import { CompanyProvider } from './context/companyDetails/CompanyProvider';
-import { ToastProvider } from './components/ui/toast';
-import { Toaster } from './components/ui/toaster';
-import StorageContextProvider from './context/storage/StorageContextProvider';
 import { Suspense } from 'react';
-import AppLoader from './components/ux/AppLoader';
-import AccountContextProvider from './context/account/AccountCOntextProvider';
-import FinancialYearContextProvider from './context/financialYear/FinancialYearCOntextProvider';
-import { getMenusByActionURL } from './lib/utils';
-import { menuData as rawMenus } from './components/constants/dummy_data';
-const Auth = React.lazy(() => import('@/screens/auth/Layout'));
-const SignIn = React.lazy(() => import('@/screens/auth/Signin'));
-const BadRequest = React.lazy(() => import('@/screens/errorPage/404-bad-request'))
-const MainLayout = React.lazy(() => import('@/layouts/MainLayout'))
-const Practice = React.lazy(() => import('@/screens/main/Practice/Practice'))
+import {
+  AccountContextProvider,
+  CompanyProvider,
+  FinancialYearContextProvider,
+  StorageContextProvider,
+} from "shared-core";
+import { AppLoader, ToastProvider, Toaster } from "shared-ui";
+import { getMenusByActionURL } from "shared-ui/lib/utils";
+import { menuData as rawMenus } from "shared-ui/components/constants/dummy_data";
+
+const SignIn = React.lazy(() => import('app_login/Signin'));
+const BadRequest = React.lazy(() => import('./errorPage/404-bad-request'))
+const MainLayout = React.lazy(() => import('./layouts/MainLayout'))
 const StudentLayout = React.lazy(() => import('./layouts/Studentlayout'));
-const StudentDashboard = React.lazy(() => import('@/screens/main/student/dashboard'));
-const AdminLayout = React.lazy(() => import('@/layouts/AdminLayout'));
-const AdminDashboard = React.lazy(() => import('@/screens/main/admin/dashboard/index'));
-const TeacherOutlet = React.lazy(() => import('@/layouts/TeacherLayout'));
-const TeacherDashboard = React.lazy(() => import('@/screens/main/teacher/dashboard/index'));
-const PortalPlaceholder = React.lazy(() => import('@/screens/main/shared/PortalPlaceholder'));
+const AdminLayout = React.lazy(() => import('./layouts/AdminLayout'));
+const StudentDashboard = React.lazy(() => import('mfe_student/Dashboard'));
+const AdminDashboard = React.lazy(() => import('mfe_admin/Dashboard'));
+const TeacherDashboard = React.lazy(() => import('mfe_teacher/Dashboard'));
+const PortalPlaceholder = React.lazy(() => import('./components/PortalPlaceholder'));
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Auth />,
-      children: [
-        {
-          index: true,
-          element: <SignIn />
-        },
-      ]
+      element: <SignIn />
     },
     {
       path: '404-bad-request',
       element: <BadRequest />
-    },
-    {
-      path: 'practice',
-      element: <Practice />
     },
     {
       path: '',
@@ -71,7 +59,7 @@ function App() {
           ]
         },
         {
-          path: '/outlet',
+          path: '/admin-outlet',
           element: <AdminLayout />,
           children: [
             {
@@ -82,19 +70,19 @@ function App() {
               path: '*',
               element: <PortalPlaceholder />
             },
+          ]
+        },
+        {
+          path: '/teacher-outlet',
+          element: <AdminLayout />,
+          children: [
             {
-              path: 'teacher-outlet',
-              element: <TeacherOutlet />,
-              children: [
-                {
-                  index: true,
-                  element: <TeacherDashboard />
-                },
-                {
-                  path: '*',
-                  element: <PortalPlaceholder />
-                },
-              ]
+              index: true,
+              element: <TeacherDashboard />
+            },
+            {
+              path: '*',
+              element: <PortalPlaceholder />
             },
           ]
         },
