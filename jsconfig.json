@@ -1,12 +1,14 @@
 {
-    "compilerOptions": {
-      // ...
-      "baseUrl": ".",
-      "paths": {
-        "@/*": [
-          "./src/*"
-        ]
-      }
-      // ...
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "shared-ui": ["packages/shared-ui/src/index.jsx"],
+      "shared-ui/*": ["packages/shared-ui/src/*"],
+      "shared-api": ["packages/shared-api/src/index.jsx"],
+      "shared-api/*": ["packages/shared-api/src/*"],
+      "shared-core": ["packages/shared-core/src/index.jsx"],
+      "shared-core/*": ["packages/shared-core/src/*"]
     }
+  },
+  "exclude": ["node_modules", "dist"]
 }
