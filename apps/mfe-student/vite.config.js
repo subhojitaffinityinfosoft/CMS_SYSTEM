@@ -27,7 +27,7 @@ export default defineConfig({
       name: "mfe_student",
       filename: "remoteEntry.js",
       exposes: {
-        "./StudentDashboard": "./src/student/dashboard/index.jsx",
+        "./StudentRouter": "./src/student/router.jsx",
       },
       shared: ["react", "react-dom", "react-router-dom", "recharts"],
     }),

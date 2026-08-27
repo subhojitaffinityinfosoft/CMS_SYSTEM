@@ -38,7 +38,7 @@ export default defineConfig({
       name: "mfe_teacher",
       filename: "remoteEntry.js",
       exposes: {
-        "./TeacherDashboard": "./src/teacher/dashboard/index.jsx",
+        "./TeacherRouter": "./src/teacher/router.jsx",
       },
       shared: sharedDependencies,
     }),

@@ -43,6 +43,35 @@ const portalConfigMap = {
     icon: BookOpenTextIcon,
     userFallback: "Student User",
   },
+  cms: {
+    key: "cms",
+    label: "Master CMS Portal",
+    homeUrl: "/cms/dashboard",
+    settingsUrl: "/cms/setup",
+    companyFallback: "CMS System",
+    icon: SettingsIcon,
+    userFallback: "Super Admin",
+    menus: [
+      {
+        id: "cms-dash",
+        title: "Dashboard",
+        url: "/cms/dashboard",
+        icon: "LayoutDashboardIcon",
+      },
+      {
+        id: "cms-setup",
+        title: "Website Setup",
+        url: "/cms/setup",
+        icon: "SettingsIcon",
+      },
+      {
+        id: "cms-tx",
+        title: "Transactions",
+        url: "/cms/transactions",
+        icon: "BanknoteIcon",
+      }
+    ]
+  }
 };
 
 const iconMap = {
@@ -175,6 +204,10 @@ export const getPortalConfig = (pathname = "") => {
   if (pathname.startsWith("/student")) {
     return portalConfigMap.student;
   }
+  
+  if (pathname.startsWith("/cms")) {
+    return portalConfigMap.cms;
+  }
 
   return portalConfigMap.admin;
 };
@@ -244,8 +277,9 @@ const normalizeSidebarItem = (item = {}, basePath) => {
 
 export const buildSidebarMenus = ({ menus = [], pathname = "/" }) => {
   const portal = getPortalConfig(pathname);
+  const activeMenus = portal.menus ? portal.menus : menus;
 
-  return [...menus]
+  return [...activeMenus]
     .filter((item) => item?.active !== false)
     .sort((left, right) => {
       const sortDiff = getSortValue(left) - getSortValue(right);

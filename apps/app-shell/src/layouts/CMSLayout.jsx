@@ -13,7 +13,6 @@ import { AppSidebar } from "@/components/ui/app-sidebar";
 import { SiteHeader } from "@/components/ui/site-header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle } from "lucide-react";
 import {
     useAccount,
     useAppMenu,
@@ -30,6 +29,9 @@ const storageKeysToClear = [
     "VITE_USER_ID",
     "VITE_USER_TYPE",
     "VITE_EMPLOYEE_ID",
+    "VITE_LOGIN_STATUS",
+    "VITE_ROLE",
+    "VITE_SUBROLE"
 ];
 
 const getResolvedTheme = (theme) => {
@@ -44,10 +46,11 @@ const getResolvedTheme = (theme) => {
     return "light";
 };
 
-const AdminLayout = () => {
+const CMSLayout = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { theme, setTheme } = useTheme();
+    // For CMS, we might not have standard account details, but we'll try to use them if present
     const { acc_dtls, setAccDtls } = useAccount();
     const { appMenus } = useAppMenu();
     const { finYear, setFinancialYear, setFinancialYearDtls } = useFinancialYear();
@@ -66,6 +69,7 @@ const AdminLayout = () => {
         }
     }, [defaultSession, finYear, setFinancialYear, setFinancialYearDtls]);
 
+    // For CMS, we force the company name to reflect the Provider if needed, but we'll use config
     const companyName = config?.companyName || getStorageData(import.meta.env.VITE_COMP_NAME) || portal.companyFallback;
     const currentUser = React.useMemo(
         () => createPortalUser({ user: acc_dtls, portal, companyName }),
@@ -122,71 +126,56 @@ const AdminLayout = () => {
             }
         });
 
-        navigate("/");
+        // Redirect CMS provider to the CMS login instead of general login
+        navigate("/cms-login");
     }, [navigate, setAccDtls, setAuthenticatedKey, setFinancialYear, setFinancialYearDtls]);
 
-return (
-  <SidebarProvider
-    style={{
-      "--sidebar-width": "260px",
-      "--header-height": "56px",
-    }}
-  >
-    {/* ✅ LEFT SIDEBAR */}
-    <AppSidebar
-      sidebarData={sidebarData}
-      footerProps={{
-        currentSession: finYear || defaultSession?.value || "",
-        onLogout: handleLogout,
-        onSessionChange: handleSessionChange,
-        onSettingsClick: handleSettingsClick,
-        portalName: portal.label,
-        sessionOptions,
-        setTheme,
-        theme: getResolvedTheme(theme),
-        user: currentUser,
-      }}
-    />
+    return (
+        <SidebarProvider
+            style={{
+                "--sidebar-width": "260px",
+                "--header-height": "56px",
+            }}
+        >
+            {/* ✅ LEFT SIDEBAR */}
+            <AppSidebar
+                sidebarData={sidebarData}
+                footerProps={{
+                    currentSession: finYear || defaultSession?.value || "",
+                    onLogout: handleLogout,
+                    onSessionChange: handleSessionChange,
+                    onSettingsClick: handleSettingsClick,
+                    portalName: portal.label,
+                    sessionOptions,
+                    setTheme,
+                    theme: getResolvedTheme(theme),
+                    user: currentUser,
+                }}
+            />
 
-<SidebarInset className="flex flex-col h-screen">
-  
-  {/* 🔥 PAYMENT OVERDUE BANNER */}
-  {config?.projectLocked && portal.key === "admin" && (
-    <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-center gap-3 text-sm font-medium shrink-0 z-50 shadow-md">
-      <AlertTriangle className="w-5 h-5 animate-pulse" />
-      <span>⚠️ Payment Due: Your subscription has expired or payment is pending.</span>
-      <button 
-        onClick={() => alert("Redirecting to payment gateway...")} 
-        className="ml-4 bg-white text-red-600 px-3 py-1 rounded-md text-xs font-bold hover:bg-red-50 transition"
-      >
-        Pay Now
-      </button>
-    </div>
-  )}
+            <SidebarInset className="flex flex-col h-screen">
+                {/* 🔥 STICKY HEADER */}
+                <div className="sticky top-0 z-40 flex items-center gap-2 h-14 px-4 border-b bg-background w-full">
+                    <SidebarTrigger className="-ml-1 p-2 rounded-md hover:bg-muted" />
+                    <Separator orientation="vertical" className="h-4" />
+                    <div className="flex-1 min-w-0">
+                        <SiteHeader
+                            pageTitle={pageTitle}
+                            portalName={portal.label}
+                            user={currentUser}
+                        />
+                    </div>
+                </div>
 
-  {/* 🔥 STICKY HEADER */}
-  <div className="sticky top-0 z-40 flex items-center gap-2 h-14 px-4 border-b bg-background w-full">
-    <SidebarTrigger className="-ml-1 p-2 rounded-md hover:bg-muted" />
-    <Separator orientation="vertical" className="h-4" />
-    <div className="flex-1 min-w-0">
-      <SiteHeader
-        pageTitle={pageTitle}
-        portalName={portal.label}
-        user={currentUser}
-      />
-    </div>
-  </div>
-
-  {/* 🔥 SCROLLABLE CONTENT */}
-  <div className="flex-1 overflow-y-auto bg-muted/20">
-    <div className="p-4 md:p-6">
-      <Outlet />
-    </div>
-  </div>
-
-</SidebarInset>
-  </SidebarProvider>
-);
+                {/* 🔥 SCROLLABLE CONTENT */}
+                <div className="flex-1 overflow-y-auto bg-muted/20">
+                    <div className="p-4 md:p-6">
+                        <Outlet />
+                    </div>
+                </div>
+            </SidebarInset>
+        </SidebarProvider>
+    );
 };
 
-export default AdminLayout;
+export default CMSLayout;

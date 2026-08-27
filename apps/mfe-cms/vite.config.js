@@ -1,14 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
-import path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, URL } from "url";
 
-const appDir = path.dirname(fileURLToPath(import.meta.url));
-const workspaceRoot = path.resolve(appDir, "../..");
-const sharedUiSrc = path.resolve(workspaceRoot, "packages/shared-ui/src");
-const sharedCoreSrc = path.resolve(workspaceRoot, "packages/shared-core/src");
-const sharedApiSrc = path.resolve(workspaceRoot, "packages/shared-api/src");
 const sharedDependencies = [
   "react",
   "react-dom",
@@ -17,31 +11,25 @@ const sharedDependencies = [
 ];
 
 export default defineConfig({
-  envDir: workspaceRoot,
   server: {
-    port: 5001,
-    strictPort: true,
-    cors: true,
-    fs: {
-      allow: [workspaceRoot],
-    },
+    port: 5004, // mfe-cms will run on 5004
   },
   preview: {
-    port: 5001,
-    strictPort: true,
+    port: 5004,
   },
   plugins: [
     react(),
     federation({
-      name: "mfe_admin",
+      name: "mfe_cms",
       filename: "remoteEntry.js",
       exposes: {
-        "./AdminRouter": "./src/admin/router.jsx",
+        "./CMSRouter": "./src/cms/router.jsx",
+        "./CMSLogin": "./src/cms/pages/CMSLogin.jsx",
       },
       shared: sharedDependencies,
     }),
   ],
-resolve: {
+  resolve: {
     alias: {
       "@": fileURLToPath(new URL("../../packages/shared-ui/src", import.meta.url)),
       "shared-ui": fileURLToPath(new URL("../../packages/shared-ui/src", import.meta.url)),
@@ -50,7 +38,9 @@ resolve: {
     },
   },
   build: {
+    modulePreload: false,
     target: "esnext",
-    chunkSizeWarningLimit: 1800,
+    minify: false,
+    cssCodeSplit: false,
   },
 });
