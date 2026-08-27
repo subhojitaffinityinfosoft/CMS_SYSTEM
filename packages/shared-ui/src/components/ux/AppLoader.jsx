@@ -2,7 +2,7 @@ import { FaTools } from 'react-icons/fa'
 const AppLoader = ({ background }) => {
   return (
     <div
-      className={`fixed top-0 min-h-screen min-w-full z-50 flex items-center flex-col justify-center gap-3 ${
+      className={`fixed top-0 left-0 min-h-screen min-w-full z-50 flex items-center flex-col justify-center gap-3 ${
         background ? background : 'bg-black/40 backdrop-blur-sm'
       }`}
     >
