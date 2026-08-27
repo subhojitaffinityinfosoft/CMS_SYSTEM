@@ -5,7 +5,6 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "../../packages/shared-ui/src/**/*.{js,ts,jsx,tsx}",
-    "../../apps/*/src/**/*.{js,ts,jsx,tsx}",
     "../app-login/src/**/*.{js,ts,jsx,tsx}",
     "../mfe-admin/src/**/*.{js,ts,jsx,tsx}",
     "../mfe-teacher/src/**/*.{js,ts,jsx,tsx}",
