@@ -1,14 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx';
-
-
-// import '@mantine/core/styles.css';
-// import '@mantine/dates/styles.css';
-import "@/index.css";
+import "shared-ui/index.css";
 import { getStoredConfig, applyTheme } from "shared-core";
-
-
 import { ThemeProvider } from "shared-ui";
 import { ApplicationMenuContextProvider, LoaderContextProvider } from "shared-core";
 import { GlobalLoader } from "shared-api";

@@ -9,7 +9,7 @@ import { ToastProvider } from './components/ui/toast';
 import { Toaster } from './components/ui/toaster';
 import StorageContextProvider from './context/storage/StorageContextProvider';
 import { Suspense } from 'react';
-import AppLoader from './components/ux/AppLoader';
+import { AppLoader } from "shared-ui";
 import AccountContextProvider from './context/account/AccountCOntextProvider';
 import FinancialYearContextProvider from './context/financialYear/FinancialYearCOntextProvider';
 import { getMenusByActionURL } from './lib/utils';

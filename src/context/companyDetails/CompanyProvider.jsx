@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import CallApi from "@/services/dbIntr";
+import CallApi from "shared-api/services/dbIntr";
 import {
   applyTheme,
   getStoredConfig,

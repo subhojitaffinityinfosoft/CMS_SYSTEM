@@ -6,17 +6,14 @@
     "apps/*",
     "packages/*"
   ],
-  "scripts": {
-    "dev": "npm run dev:mf",
-    "dev:mf": "concurrently -n shell,login,admin,teacher,student -c blue,magenta,green,yellow,cyan \"npm -w app-shell run dev\" \"npm -w app-login run dev\" \"npm -w mfe-admin run dev\" \"npm -w mfe-teacher run dev\" \"npm -w mfe-student run dev\"",
-    "dev:shell": "npm -w app-shell run dev",
-    "dev:login": "npm -w app-login run dev",
-    "dev:admin": "npm -w mfe-admin run dev",
-    "dev:teacher": "npm -w mfe-teacher run dev",
-    "dev:student": "npm -w mfe-student run dev",
-    "dev:legacy": "vite",
-    "build": "npm run build --workspaces --if-present",
-    "build:mf": "npm -w app-login run build && npm -w mfe-admin run build && npm -w mfe-teacher run build && npm -w mfe-student run build && npm -w app-shell run build"
+"scripts": {
+    "build:remotes": "npm run build --workspace=apps/app-login --workspace=apps/mfe-admin --workspace=apps/mfe-teacher --workspace=apps/mfe-student",
+    "serve:login": "npm run preview --workspace=apps/app-login",
+    "serve:admin": "npm run preview --workspace=apps/mfe-admin",
+    "serve:teacher": "npm run preview --workspace=apps/mfe-teacher",
+    "serve:student": "npm run preview --workspace=apps/mfe-student",
+    "dev:shell": "npm run dev --workspace=apps/app-shell",
+    "start": "npm run build:remotes && concurrently -k -p \"[{name}]\" -n \"SHELL,LOGIN,ADMIN,TEACHER,STUDENT\" -c \"cyan,magenta,yellow,blue,green\" \"npm run dev:shell\" \"npm run serve:login\" \"npm run serve:admin\" \"npm run serve:teacher\" \"npm run serve:student\""
   },
   "dependencies": {
     "@ag-media/react-pdf-table": "^1.0.1",

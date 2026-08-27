@@ -45,14 +45,13 @@ export default defineConfig({
       shared: sharedDependencies,
     }),
   ],
-  resolve: {
-    alias: [
-      // 🟢 FIXED: Now @ points to app-login/src
-      { find: "@", replacement: path.resolve(appDir, "src") },
-      { find: /^shared-ui\/(.*)$/, replacement: `${sharedUiSrc}/$1` },
-      { find: /^shared-core\/(.*)$/, replacement: `${sharedCoreSrc}/$1` },
-      { find: /^shared-api\/(.*)$/, replacement: `${sharedApiSrc}/$1` },
-    ],
+resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("../../packages/shared-ui/src", import.meta.url)),
+      "shared-ui": fileURLToPath(new URL("../../packages/shared-ui/src", import.meta.url)),
+      "shared-core": fileURLToPath(new URL("../../packages/shared-core/src", import.meta.url)),
+      "shared-api": fileURLToPath(new URL("../../packages/shared-api/src", import.meta.url)),
+    },
   },
   build: {
     target: "esnext",
