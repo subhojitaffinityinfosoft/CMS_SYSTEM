@@ -9,6 +9,7 @@ const workspaceRoot = path.resolve(appDir, "../..");
 const sharedUiSrc = path.resolve(workspaceRoot, "packages/shared-ui/src");
 const sharedCoreSrc = path.resolve(workspaceRoot, "packages/shared-core/src");
 const sharedApiSrc = path.resolve(workspaceRoot, "packages/shared-api/src");
+
 const sharedDependencies = [
   "react",
   "react-dom",
@@ -46,7 +47,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
-      { find: "@", replacement: sharedUiSrc },
+      // 🟢 FIXED: Now @ points to app-login/src
+      { find: "@", replacement: path.resolve(appDir, "src") },
       { find: /^shared-ui\/(.*)$/, replacement: `${sharedUiSrc}/$1` },
       { find: /^shared-core\/(.*)$/, replacement: `${sharedCoreSrc}/$1` },
       { find: /^shared-api\/(.*)$/, replacement: `${sharedApiSrc}/$1` },

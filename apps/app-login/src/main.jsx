@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import "@/index.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import 'shared-ui/src/index.css'; 
+import { ThemeProvider } from "shared-ui";
 import SignIn from "./auth/Signin";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
