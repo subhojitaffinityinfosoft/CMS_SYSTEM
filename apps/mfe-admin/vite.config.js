@@ -17,6 +17,9 @@ const sharedDependencies = [
 ];
 
 export default defineConfig({
+  // --- PUBLISH LINE (Uncomment this before building for IIS if hosting in a subfolder) ---
+  // base: "/mfe-admin/",
+
   envDir: workspaceRoot,
   server: {
     port: 5001,

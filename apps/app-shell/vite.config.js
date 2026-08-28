@@ -21,11 +21,19 @@ export default defineConfig({
     federation({
       name: "app_shell",
       remotes: {
+        // --- DEVELOPMENT LINES (Use these for local development) ---
         app_login: "http://localhost:5000/assets/remoteEntry.js",
         mfe_admin: "http://localhost:5001/assets/remoteEntry.js",
         mfe_teacher: "http://localhost:5002/assets/remoteEntry.js",
         mfe_student: "http://localhost:5003/assets/remoteEntry.js",
         mfe_cms: "http://localhost:5004/assets/remoteEntry.js",
+        
+        // --- PUBLISH LINES (Uncomment these and comment the Development lines before building for IIS) ---
+        // app_login: "https://cms.affinityinfosoft.in/app-login/assets/remoteEntry.js",
+        // mfe_admin: "https://cms.affinityinfosoft.in/mfe-admin/assets/remoteEntry.js",
+        // mfe_teacher: "https://cms.affinityinfosoft.in/mfe-teacher/assets/remoteEntry.js",
+        // mfe_student: "https://cms.affinityinfosoft.in/mfe-student/assets/remoteEntry.js",
+        // mfe_cms: "https://cms.affinityinfosoft.in/mfe-cms/assets/remoteEntry.js",
       },
       shared: ["react", "react-dom", "react-router-dom", "recharts"],
     }),
