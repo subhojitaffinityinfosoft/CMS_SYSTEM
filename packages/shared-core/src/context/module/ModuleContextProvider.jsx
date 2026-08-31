@@ -19,9 +19,31 @@ const staticModuleMenus = {
     { id: "adm-new",    name: "New Application", route: "/admin/admission/new"         },
   ],
   master: [
-    { id: "mst-home",   name: "Overview",       route: "/admin/master"                 },
-    { id: "mst-sub",    name: "Subjects",        route: "/admin/master/subjects"       },
-    { id: "mst-dept",   name: "Departments",     route: "/admin/master/departments"    },
+    { id: "mst-home",   name: "Overview",       route: "/admin/master", icon: "LayoutDashboard" },
+    { 
+      id: "mst-sub",    
+      name: "Subjects",        
+      route: "#",
+      icon: "BookOpen",
+      items: [
+        { id: "mst-sub-list", name: "All Subjects", route: "/admin/master/subjects", icon: "List" },
+        { id: "mst-sub-add",  name: "Add New Subject", route: "/admin/master/subjects/new", icon: "PlusCircle" }
+      ]
+    },
+    { 
+      id: "mst-dept",   
+      name: "Departments",     
+      route: "#",
+      icon: "Building",
+      items: [
+        { id: "mst-dept-acad", name: "Academic Setup", route: "#", icon: "GraduationCap", items: [
+          { id: "mst-dept-sci", name: "Science", route: "/admin/master/departments/science" },
+          { id: "mst-dept-arts", name: "Arts & Humanities", route: "/admin/master/departments/arts" }
+        ]},
+        { id: "mst-dept-nonacad", name: "Non-Academic", route: "/admin/master/departments/non-academic", icon: "Briefcase" },
+        { id: "mst-dept-all", name: "View All", route: "/admin/master/departments", icon: "Eye" }
+      ]
+    },
   ],
   transaction: [
     { id: "txn-home",   name: "Dashboard",       route: "/admin/transaction"            },

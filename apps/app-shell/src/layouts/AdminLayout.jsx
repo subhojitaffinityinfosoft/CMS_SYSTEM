@@ -6,8 +6,7 @@ import {
     getPortalConfig,
 } from "@/components/constants/sidebar-data";
 import { useTheme } from "@/components/theme-provider";
-import { AppSidebar } from "@/components/ui/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { ModuleMenuBar } from "@/components/ui/module-menu-bar";
 import { AlertTriangle, LayoutDashboardIcon } from "lucide-react";
 import {
     useAccount,
@@ -27,10 +26,7 @@ const getResolvedTheme = (theme) => {
     return "light";
 };
 
-const moduleColors = {
-    admission: "#4F46E5", master: "#8b5cf6", transaction: "#059669",
-    reports: "#D97706", student: "#0ea5e9", teacher: "#10b981",
-};
+
 
 const AdminLayout = () => {
     const location = useLocation();
@@ -39,7 +35,7 @@ const AdminLayout = () => {
     const { finYear, setFinancialYear, setFinancialYearDtls } = useFinancialYear();
     const { setAuthenticatedKey } = useContext(StorageContext);
     const { config } = useCompany();
-    const { moduleMenus } = useModule();
+    const { moduleMenus, getModuleById } = useModule();
 
     const portal = React.useMemo(() => getPortalConfig(location.pathname), [location.pathname]);
     const sessionOptions = React.useMemo(() => buildPortalSessionOptions(), []);
@@ -62,17 +58,26 @@ const AdminLayout = () => {
     const pathParts = location.pathname.split('/').filter(Boolean);
     const moduleId = pathParts[1] || '';
     const moduleName = moduleId.charAt(0).toUpperCase() + moduleId.slice(1);
-    const moduleColor = moduleColors[moduleId];
+    
+    // Get dynamic color from module config
+    const activeModule = getModuleById(moduleId);
+    const moduleColor = activeModule?.color || "#134074";
 
-    // Build sidebar navMain from the module's menu config
-    const activeMenuItems = (moduleMenus[moduleId] || []).map((item, idx) => ({
-        id: item.id,
-        title: item.name,
-        url: item.route,
-        icon: LayoutDashboardIcon,
-        display_position: idx + 1,
-        items: [],
-    }));
+    // Build sidebar navMain from the module's menu config recursively
+    const mapMenuItems = (items) => {
+        if (!items) return [];
+        return items.map((item, idx) => ({
+            id: item.id,
+            title: item.name,
+            url: item.route,
+            icon: item.icon || LayoutDashboardIcon,
+            badge: item.badge,
+            display_position: idx + 1,
+            items: mapMenuItems(item.items),
+        }));
+    };
+
+    const activeMenuItems = mapMenuItems(moduleMenus[moduleId]);
 
     const sidebarData = {
         portal,
@@ -106,55 +111,43 @@ const AdminLayout = () => {
     }, [setAccDtls, setAuthenticatedKey, setFinancialYear, setFinancialYearDtls]);
 
     return (
-        <SidebarProvider style={{ "--sidebar-width": "250px", "--header-height": "56px" }}>
+        <div className="flex flex-col h-screen overflow-hidden bg-muted/20">
 
-            {/* ── SIDEBAR with module-specific menus ────── */}
-            <AppSidebar
-                sidebarData={sidebarData}
-                footerProps={{
-                    currentSession: finYear || defaultSession?.value || "",
-                    onLogout: handleLogout,
-                    onSessionChange: handleSessionChange,
-                    portalName: moduleName,
-                    sessionOptions,
-                    setTheme,
-                    theme: getResolvedTheme(theme),
-                    user: currentUser,
-                }}
+            {/* 🔴 Payment overdue banner */}
+            {config?.projectLocked && (
+                <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-center gap-3 text-sm font-medium shrink-0 z-50">
+                    <AlertTriangle className="w-5 h-5 animate-pulse" />
+                    <span>⚠️ Payment Due: Subscription expired or payment pending.</span>
+                    <button onClick={() => alert("Redirecting...")} className="ml-4 bg-white text-red-600 px-3 py-1 rounded-md text-xs font-bold hover:bg-red-50 transition">
+                        Pay Now
+                    </button>
+                </div>
+            )}
+
+            {/* ── UNIFIED ADMIN HEADER ──────────────── */}
+            <div className="z-40 h-14 px-4 border-b bg-background shadow-sm flex items-center w-full shrink-0">
+                <AdminHeader
+                    pageTitle={moduleName}
+                    moduleColor={moduleColor}
+                    showSidebarTrigger={false} // Sidebar is gone!
+                    showChangeModule={true}
+                />
+            </div>
+
+            {/* ── HORIZONTAL MEGA MENU (Replacing Sidebar) ────── */}
+            <ModuleMenuBar 
+                moduleColor={moduleColor} 
+                menuItems={activeMenuItems} 
             />
 
-            <SidebarInset className="flex flex-col h-screen">
-
-                {/* 🔴 Payment overdue banner */}
-                {config?.projectLocked && (
-                    <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-center gap-3 text-sm font-medium shrink-0 z-50">
-                        <AlertTriangle className="w-5 h-5 animate-pulse" />
-                        <span>⚠️ Payment Due: Subscription expired or payment pending.</span>
-                        <button onClick={() => alert("Redirecting...")} className="ml-4 bg-white text-red-600 px-3 py-1 rounded-md text-xs font-bold hover:bg-red-50 transition">
-                            Pay Now
-                        </button>
-                    </div>
-                )}
-
-                {/* ── UNIFIED ADMIN HEADER ──────────────── */}
-                <div className="sticky top-0 z-40 h-14 px-4 border-b bg-background/95 backdrop-blur-md shadow-sm flex items-center w-full shrink-0">
-                    <AdminHeader
-                        pageTitle={moduleName}
-                        moduleColor={moduleColor}
-                        showSidebarTrigger={true}
-                        showChangeModule={true}
-                    />
+            {/* ── SCROLLABLE CONTENT ────────────────── */}
+            <div className="flex-1 overflow-y-auto">
+                <div className="p-4 md:p-6">
+                    <Outlet />
                 </div>
+            </div>
 
-                {/* ── SCROLLABLE CONTENT ────────────────── */}
-                <div className="flex-1 overflow-y-auto bg-muted/20">
-                    <div className="p-4 md:p-6">
-                        <Outlet />
-                    </div>
-                </div>
-
-            </SidebarInset>
-        </SidebarProvider>
+        </div>
     );
 };
 
