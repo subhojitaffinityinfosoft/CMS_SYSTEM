@@ -11,7 +11,6 @@ import {
   StorageContextProvider,
   FinancialYearContextProvider,
   CompanyProvider,
-  CollegeContextProvider,
   UnitContextProvider,
   SeasonContextProvider,
   ModuleContextProvider
@@ -30,20 +29,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <AccountContextProvider>
           <FinancialYearContextProvider>
             <CompanyProvider>
-              <CollegeContextProvider>
-                <UnitContextProvider>
-                  <SeasonContextProvider>
-                    <ModuleContextProvider>
-                      <ApplicationMenuContextProvider>
-                        <LoaderContextProvider>
-                          <GlobalLoader />
-                          <App />
-                        </LoaderContextProvider>
-                      </ApplicationMenuContextProvider>
-                    </ModuleContextProvider>
-                  </SeasonContextProvider>
-                </UnitContextProvider>
-              </CollegeContextProvider>
+              <UnitContextProvider>
+                <SeasonContextProvider>
+                  <ModuleContextProvider>
+                    <ApplicationMenuContextProvider>
+                      <LoaderContextProvider>
+                        <GlobalLoader />
+                        <App />
+                      </LoaderContextProvider>
+                    </ApplicationMenuContextProvider>
+                  </ModuleContextProvider>
+                </SeasonContextProvider>
+              </UnitContextProvider>
             </CompanyProvider>
           </FinancialYearContextProvider>
         </AccountContextProvider>

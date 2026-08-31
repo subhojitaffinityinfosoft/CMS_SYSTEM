@@ -38,6 +38,7 @@ export * from "./components/ui/season-selector";
 export * from "./components/ui/module-card";
 export * from "./components/ui/app-sidebar";
 export * from "./components/ui/site-header";
+export * from "./components/ui/admin-header";
 
 // UX Components
 export { default as AppLoader } from "./components/ux/AppLoader";

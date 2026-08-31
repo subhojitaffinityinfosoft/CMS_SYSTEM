@@ -12,7 +12,6 @@ export function SiteHeader({
   pageTitle = "Dashboard",
   portalName = "Portal",
   user,
-  selectedCollege,
   selectedUnits,
   onUnitsChange,
   selectedSeason,
@@ -32,7 +31,7 @@ export function SiteHeader({
         <Separator orientation="vertical" className="h-6 hidden md:block" />
         <div className="leading-tight">
           <p className="text-sm font-bold text-primary">
-            {selectedCollege?.name || user?.companyName || "Select College"}
+            {user?.companyName || "Global ERP System"}
           </p>
           <p className="text-xs text-muted-foreground flex items-center gap-2">
             <span>Module: <span className="font-semibold" style={{ color: activeModule?.color }}>{activeModule?.name || portalName}</span></span>

@@ -8,6 +8,7 @@ import { format } from "date-fns"
 import { CalendarIcon, Eye, EyeOff, Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { UnitMultiSelect } from "shared-ui"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -329,6 +330,16 @@ export default function FormComponent({ formField, onSubmit, submitBtnText = "Su
                                             <div className="w-full">
                                                 {field.render({ value: formControlProps.value, onChange: formControlProps.onChange })}
                                             </div>
+                                        </FormControl>
+                                    )}
+
+                                    {/* 10. MULTISELECT */}
+                                    {field.type === "multiselect" && (
+                                        <FormControl>
+                                            <UnitMultiSelect 
+                                                selectedUnits={formControlProps.value || []} 
+                                                onChange={formControlProps.onChange} 
+                                            />
                                         </FormControl>
                                     )}
 

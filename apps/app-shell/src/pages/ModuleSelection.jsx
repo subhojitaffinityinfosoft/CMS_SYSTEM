@@ -1,36 +1,35 @@
 import React from 'react';
-import { useModule, useCollege, useAccount } from 'shared-core';
+import { useModule, useUnit, useSeason } from 'shared-core';
 import { ModuleCard } from 'shared-ui';
+import { Grid3X3 } from 'lucide-react';
 
 export default function ModuleSelection() {
   const { modules } = useModule();
-  const { selectedCollege } = useCollege();
-  const { acc_dtls } = useAccount();
-
-  // In a real scenario, filter modules based on user permissions
-  // const permittedModules = modules.filter(m => userPermissions.includes(m.id));
-  const permittedModules = modules;
+  const { selectedUnits } = useUnit();
+  const { selectedSeason } = useSeason();
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in zoom-in-95 duration-500">
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 rounded-2xl border">
-        <h1 className="text-3xl font-bold text-foreground">
-          Welcome back, {acc_dtls?.name || 'User'}
-        </h1>
-        <p className="text-muted-foreground mt-2 text-lg">
-          {selectedCollege?.name} ERP System
-        </p>
+    <div>
+      {/* Section title */}
+      <div className="flex items-center gap-3 mb-8">
+        <div className="bg-primary/10 p-2.5 rounded-xl">
+          <Grid3X3 className="w-5 h-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Workspace Modules</h2>
+          <p className="text-sm text-muted-foreground">
+            {selectedUnits?.length > 0
+              ? `${selectedUnits.length} unit${selectedUnits.length > 1 ? 's' : ''} · ${selectedSeason?.name || 'No season'}`
+              : 'Select a module to get started'}
+          </p>
+        </div>
       </div>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-          Available Modules
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {permittedModules.map((module) => (
-            <ModuleCard key={module.id} module={module} />
-          ))}
-        </div>
+      {/* Module cards grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        {modules.map((module) => (
+          <ModuleCard key={module.id} module={module} />
+        ))}
       </div>
     </div>
   );
