@@ -19,20 +19,26 @@ const portalConfigMap = {
   admin: {
     key: "admin",
     label: "Admin Portal",
-    homeUrl: "/admin-outlet",
-    settingsUrl: "/admin-outlet/settings",
-    companyFallback: "CMS System",
+    homeUrl: "/admin",
+    settingsUrl: "/admin/settings",
+    companyFallback: "General College",
     icon: Building2Icon,
     userFallback: "Admin User",
   },
   teacher: {
     key: "teacher",
     label: "Teacher Portal",
-    homeUrl: "/teacher-outlet",
-    settingsUrl: "/teacher-outlet/settings",
-    companyFallback: "CMS System",
+    homeUrl: "/teacher",
+    settingsUrl: "/teacher/settings",
+    companyFallback: "General College",
     icon: GraduationCapIcon,
     userFallback: "Teacher User",
+    menus: [
+      { id: "tch-dash",  title: "Dashboard",   url: "/teacher/dashboard",  icon: "dashboard"  },
+      { id: "tch-class", title: "My Classes",   url: "/teacher/classes",    icon: "teacher"    },
+      { id: "tch-att",   title: "Attendance",   url: "/teacher/attendance", icon: "dashboard"  },
+      { id: "tch-marks", title: "Marks Entry",  url: "/teacher/marks",     icon: "dashboard"  },
+    ]
   },
   student: {
     key: "student",
@@ -197,14 +203,14 @@ export const getSidebarPageTitle = (pathname, sidebarData) => {
 };
 
 export const getPortalConfig = (pathname = "") => {
-  if (pathname.startsWith("/teacher-outlet")) {
+  if (pathname.startsWith("/teacher")) {
     return portalConfigMap.teacher;
   }
 
   if (pathname.startsWith("/student")) {
     return portalConfigMap.student;
   }
-  
+
   if (pathname.startsWith("/cms")) {
     return portalConfigMap.cms;
   }

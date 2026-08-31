@@ -24,15 +24,16 @@ export default function AdminModuleRoutes() {
     <Routes>
       {/* Each module gets AdminLayout as its wrapper (uses <Outlet> internally) */}
       <Route element={<AdminLayout />}>
-        <Route path="admission/*" element={<AdminRouter />} />
-        <Route path="master/*" element={<AdminRouter />} />
-        <Route path="transaction/*" element={<AdminRouter />} />
-        <Route path="reports/*" element={<AdminRouter />} />
         <Route path="student/*" element={<StudentRouter />} />
         <Route path="teacher/*" element={<TeacherRouter />} />
+        
+        {/* 
+          AdminRouter internally defines routes for "admission", "master", 
+          "transaction", "reports", and "dashboard".
+          We delegate all remaining /admin/* paths to AdminRouter here.
+        */}
+        <Route path="*" element={<AdminRouter />} />
       </Route>
-
-      <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
     </Routes>
   );
 }

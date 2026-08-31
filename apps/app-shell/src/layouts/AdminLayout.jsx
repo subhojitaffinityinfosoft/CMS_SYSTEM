@@ -1,34 +1,25 @@
 import React, { useContext } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { menuData } from "@/components/constants/dummy_data";
 import {
     buildPortalSessionOptions,
-    createPortalSidebarData,
     createPortalUser,
     getPortalConfig,
 } from "@/components/constants/sidebar-data";
 import { useTheme } from "@/components/theme-provider";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, LayoutDashboardIcon } from "lucide-react";
 import {
     useAccount,
-    useAppMenu,
     useFinancialYear,
     useCompany,
+    useModule,
 } from "shared-core";
 import StorageContext from "shared-core/context/storage/StorageContext";
 import { getStorageData, removeItemFromStorage } from "@/lib/Storage";
 import { AdminHeader } from "shared-ui";
 
-const storageKeysToClear = [
-    "VITE_AU_TK",
-    "VITE_COMP_NAME",
-    "VITE_ROLE_ID",
-    "VITE_USER_ID",
-    "VITE_USER_TYPE",
-    "VITE_EMPLOYEE_ID",
-];
+const storageKeysToClear = ["VITE_AU_TK", "VITE_COMP_NAME", "VITE_ROLE_ID", "VITE_USER_ID", "VITE_USER_TYPE", "VITE_EMPLOYEE_ID"];
 
 const getResolvedTheme = (theme) => {
     if (theme !== "system") return theme;
@@ -36,34 +27,19 @@ const getResolvedTheme = (theme) => {
     return "light";
 };
 
-// Derive a readable module name from the URL path
-const getModuleFromPath = (pathname) => {
-    const parts = pathname.split('/').filter(Boolean);
-    // /admin/<module>/...
-    if (parts[0] === 'admin' && parts[1]) {
-        return parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-    }
-    return 'Module';
-};
-
-// Map module id to its color
 const moduleColors = {
-    admission: "#4F46E5",
-    master: "#8b5cf6",
-    transaction: "#059669",
-    reports: "#D97706",
-    student: "#0ea5e9",
-    teacher: "#10b981",
+    admission: "#4F46E5", master: "#8b5cf6", transaction: "#059669",
+    reports: "#D97706", student: "#0ea5e9", teacher: "#10b981",
 };
 
 const AdminLayout = () => {
     const location = useLocation();
     const { theme, setTheme } = useTheme();
     const { acc_dtls, setAccDtls } = useAccount();
-    const { appMenus } = useAppMenu();
     const { finYear, setFinancialYear, setFinancialYearDtls } = useFinancialYear();
     const { setAuthenticatedKey } = useContext(StorageContext);
     const { config } = useCompany();
+    const { moduleMenus } = useModule();
 
     const portal = React.useMemo(() => getPortalConfig(location.pathname), [location.pathname]);
     const sessionOptions = React.useMemo(() => buildPortalSessionOptions(), []);
@@ -76,17 +52,37 @@ const AdminLayout = () => {
         }
     }, [defaultSession, finYear, setFinancialYear, setFinancialYearDtls]);
 
-    const companyName = config?.companyName || getStorageData(import.meta.env.VITE_COMP_NAME) || portal.companyFallback;
+    const companyName = config?.companyName || getStorageData(import.meta.env.VITE_COMP_NAME) || "General College";
     const currentUser = React.useMemo(
         () => createPortalUser({ user: acc_dtls, portal, companyName }),
         [acc_dtls, companyName, portal]
     );
 
-    const menus = appMenus?.length ? appMenus : menuData;
-    const sidebarData = React.useMemo(
-        () => createPortalSidebarData({ pathname: location.pathname, menus, companyName, user: currentUser }),
-        [companyName, currentUser, location.pathname, menus]
-    );
+    // Determine active module from URL: /admin/<moduleId>/...
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    const moduleId = pathParts[1] || '';
+    const moduleName = moduleId.charAt(0).toUpperCase() + moduleId.slice(1);
+    const moduleColor = moduleColors[moduleId];
+
+    // Build sidebar navMain from the module's menu config
+    const activeMenuItems = (moduleMenus[moduleId] || []).map((item, idx) => ({
+        id: item.id,
+        title: item.name,
+        url: item.route,
+        icon: LayoutDashboardIcon,
+        display_position: idx + 1,
+        items: [],
+    }));
+
+    const sidebarData = {
+        portal,
+        brand: { name: companyName, subtitle: moduleName + " Module", url: "/admin/dashboard", icon: portal.icon },
+        user: currentUser,
+        navMain: activeMenuItems,
+        documents: [],
+        navSecondary: [],
+        showFooterUser: true,
+    };
 
     const handleSessionChange = React.useCallback(
         (value) => {
@@ -109,23 +105,17 @@ const AdminLayout = () => {
         window.location.href = "/login";
     }, [setAccDtls, setAuthenticatedKey, setFinancialYear, setFinancialYearDtls]);
 
-    // Derive active module info from URL
-    const parts = location.pathname.split('/').filter(Boolean);
-    const moduleId = parts[1] || '';
-    const moduleName = moduleId.charAt(0).toUpperCase() + moduleId.slice(1);
-    const moduleColor = moduleColors[moduleId] || undefined;
-
     return (
-        <SidebarProvider style={{ "--sidebar-width": "260px", "--header-height": "56px" }}>
+        <SidebarProvider style={{ "--sidebar-width": "250px", "--header-height": "56px" }}>
 
-            {/* ── SIDEBAR ───────────────────────────── */}
+            {/* ── SIDEBAR with module-specific menus ────── */}
             <AppSidebar
                 sidebarData={sidebarData}
                 footerProps={{
                     currentSession: finYear || defaultSession?.value || "",
                     onLogout: handleLogout,
                     onSessionChange: handleSessionChange,
-                    portalName: portal.label,
+                    portalName: moduleName,
                     sessionOptions,
                     setTheme,
                     theme: getResolvedTheme(theme),
@@ -135,21 +125,18 @@ const AdminLayout = () => {
 
             <SidebarInset className="flex flex-col h-screen">
 
-                {/* 🔴 PAYMENT OVERDUE BANNER */}
-                {config?.projectLocked && portal.key === "admin" && (
-                    <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-center gap-3 text-sm font-medium shrink-0 z-50 shadow-md">
+                {/* 🔴 Payment overdue banner */}
+                {config?.projectLocked && (
+                    <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-center gap-3 text-sm font-medium shrink-0 z-50">
                         <AlertTriangle className="w-5 h-5 animate-pulse" />
-                        <span>⚠️ Payment Due: Your subscription has expired or payment is pending.</span>
-                        <button
-                            onClick={() => alert("Redirecting to payment gateway...")}
-                            className="ml-4 bg-white text-red-600 px-3 py-1 rounded-md text-xs font-bold hover:bg-red-50 transition"
-                        >
+                        <span>⚠️ Payment Due: Subscription expired or payment pending.</span>
+                        <button onClick={() => alert("Redirecting...")} className="ml-4 bg-white text-red-600 px-3 py-1 rounded-md text-xs font-bold hover:bg-red-50 transition">
                             Pay Now
                         </button>
                     </div>
                 )}
 
-                {/* ── UNIFIED ADMIN HEADER ──────────── */}
+                {/* ── UNIFIED ADMIN HEADER ──────────────── */}
                 <div className="sticky top-0 z-40 h-14 px-4 border-b bg-background/95 backdrop-blur-md shadow-sm flex items-center w-full shrink-0">
                     <AdminHeader
                         pageTitle={moduleName}
@@ -159,7 +146,7 @@ const AdminLayout = () => {
                     />
                 </div>
 
-                {/* ── SCROLLABLE CONTENT ────────────── */}
+                {/* ── SCROLLABLE CONTENT ────────────────── */}
                 <div className="flex-1 overflow-y-auto bg-muted/20">
                     <div className="p-4 md:p-6">
                         <Outlet />

@@ -3,14 +3,14 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import "shared-ui/index.css";
 import { AppLoader } from "shared-ui";
 
-import MainLayout from "./layouts/MainLayout";
-import ERPShellLayout from "./layouts/ERPShellLayout";
-import TeacherLayout from "./layouts/TeacherLayout";
-import StudentLayout from "./layouts/Studentlayout";
-import ModuleSelection from "./pages/ModuleSelection";
-import CMSLayout from "./layouts/CMSLayout";
-import BadRequest from "./errorPage/404-bad-request";
-import AdminModuleRoutes from "./routes/AdminModuleRoutes";
+const MainLayout = lazy(() => import("./layouts/MainLayout"));
+const ERPShellLayout = lazy(() => import("./layouts/ERPShellLayout"));
+const TeacherLayout = lazy(() => import("./layouts/TeacherLayout"));
+const StudentLayout = lazy(() => import("./layouts/Studentlayout"));
+const ModuleSelection = lazy(() => import("./pages/ModuleSelection"));
+const CMSLayout = lazy(() => import("./layouts/CMSLayout"));
+const BadRequest = lazy(() => import("./errorPage/404-bad-request"));
+const AdminModuleRoutes = lazy(() => import("./routes/AdminModuleRoutes"));
 
 // 🚀 HOC for Suspense
 const Loadable = (Component) => (props) => (
@@ -29,7 +29,7 @@ const CMSLogin = Loadable(lazy(() => import("mfe_cms/CMSLogin")));
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: Loadable(MainLayout)({}),
     children: [
       // ─── Auth ────────────────────────────────────────────────────────────
       {
@@ -40,26 +40,26 @@ const router = createBrowserRouter([
       // ─── Admin: dashboard (module picker) + all admin modules ─────────
       {
         path: "admin/dashboard",
-        element: <ERPShellLayout />,
-        children: [{ path: "", element: <ModuleSelection /> }],
+        element: Loadable(ERPShellLayout)({}),
+        children: [{ path: "", element: Loadable(ModuleSelection)({}) }],
       },
       {
         // All other admin sub-paths delegate to AdminModuleRoutes
         path: "admin/*",
-        element: <AdminModuleRoutes />,
+        element: Loadable(AdminModuleRoutes)({}),
       },
 
       // ─── Teacher (own layout) ─────────────────────────────────────────
       {
         path: "teacher/*",
-        element: <TeacherLayout />,
+        element: Loadable(TeacherLayout)({}),
         children: [{ path: "*", element: <TeacherRouter /> }],
       },
 
       // ─── Student (own layout) ─────────────────────────────────────────
       {
         path: "student/*",
-        element: <StudentLayout />,
+        element: Loadable(StudentLayout)({}),
         children: [{ path: "*", element: <StudentRouter /> }],
       },
 
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
       },
       {
         path: "cms/*",
-        element: <CMSLayout />,
+        element: Loadable(CMSLayout)({}),
         children: [{ path: "*", element: <CMSRouter /> }],
       },
 
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
       },
       {
         path: "*",
-        element: <BadRequest />,
+        element: Loadable(BadRequest)({}),
       },
     ],
   },
