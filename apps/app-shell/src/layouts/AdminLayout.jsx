@@ -18,7 +18,8 @@ import {
     useAccount,
     useAppMenu,
     useFinancialYear,
-    useCompany
+    useCompany,
+    useUnit
 } from "shared-core";
 import StorageContext from "shared-core/context/storage/StorageContext";
 import { getStorageData, removeItemFromStorage } from "@/lib/Storage";
@@ -53,6 +54,7 @@ const AdminLayout = () => {
     const { finYear, setFinancialYear, setFinancialYearDtls } = useFinancialYear();
     const { setAuthenticatedKey } = useContext(StorageContext);
     const { config } = useCompany();
+    const { selectedUnits, setSelectedUnits } = useUnit();
 
     const portal = React.useMemo(() => getPortalConfig(location.pathname), [location.pathname]);
     const sessionOptions = React.useMemo(() => buildPortalSessionOptions(), []);
@@ -173,6 +175,8 @@ return (
         pageTitle={pageTitle}
         portalName={portal.label}
         user={currentUser}
+        selectedUnits={selectedUnits}
+        onUnitsChange={setSelectedUnits}
       />
     </div>
   </div>

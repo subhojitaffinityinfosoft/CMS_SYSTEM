@@ -32,6 +32,12 @@ export * from "./components/ui/sheet";
 export * from "./components/ui/skeleton";
 export * from "./components/ui/switch";
 export * from "./components/ui/tooltip";
+export * from "./components/ui/college-selector";
+export * from "./components/ui/unit-multiselect";
+export * from "./components/ui/season-selector";
+export * from "./components/ui/module-card";
+export * from "./components/ui/app-sidebar";
+export * from "./components/ui/site-header";
 
 // UX Components
 export { default as AppLoader } from "./components/ux/AppLoader";

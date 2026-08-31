@@ -24,7 +24,7 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 
-export function AppSidebar({ sidebarData, footerProps }) {
+export function AppSidebar({ sidebarData, footerProps, activeModuleColor }) {
   const [openMenu, setOpenMenu] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -167,10 +167,11 @@ export function AppSidebar({ sidebarData, footerProps }) {
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "bg-muted/40 hover:bg-muted"
                       }
-`}
-                  >
+                    }
+                    style={isActiveParent && activeModuleColor ? { backgroundColor: activeModuleColor, color: '#fff' } : {}}
+`}>
                     {item.icon && (
-                      <item.icon className="w-5 h-5 shrink-0 text-primary" />)}
+                      <item.icon className="w-5 h-5 shrink-0" style={{ color: isActiveParent ? '#fff' : (activeModuleColor || 'var(--primary)') }} />)}
 
                     {!isCollapsed && (
                       <span className="flex-1">{item.title}</span>
@@ -200,15 +201,19 @@ export function AppSidebar({ sidebarData, footerProps }) {
                             <NavLink
                               to={sub.url}
                               className={({ isActive }) =>
-                                `flex items-center gap-2 text-sm rounded-md px-2 py-1.5 transition
-                               ${isActive ? "bg-primary/15  border-l-2 border-primary font-medium" : "text-muted-foreground"}`}
+                                isActive ? "flex items-center gap-2 text-sm rounded-md px-2 py-1.5 transition font-medium border-l-2" : "flex items-center gap-2 text-sm rounded-md px-2 py-1.5 transition text-muted-foreground"
+                              }
+                              style={({ isActive }) => isActive && activeModuleColor ? { backgroundColor: `${activeModuleColor}15`, borderColor: activeModuleColor, color: activeModuleColor } : {}}
                             >
                               {/* ✅ SUB ICON FIX */}
-                              {sub.icon && (
-                                <sub.icon className="w-4.5 h-4.5 shrink-0 text-primary" />
+                              {({ isActive }) => (
+                                <>
+                                  {sub.icon && (
+                                    <sub.icon className="w-4.5 h-4.5 shrink-0" style={{ color: isActive ? (activeModuleColor || 'var(--primary)') : 'inherit' }} />
+                                  )}
+                                  <span>{sub.title}</span>
+                                </>
                               )}
-
-                              <span>{sub.title}</span>
                             </NavLink>
                           </SidebarMenuButton>
                         </SidebarMenuItem>

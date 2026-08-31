@@ -33,7 +33,7 @@ export function NavUser({
   user,
 }) {
   const fallbackInitials =
-    user.initials ?? getInitials(user.name ?? "Admin User");
+    user?.initials ?? getInitials(user?.name ?? "Admin User");
 
   return (
     <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export function NavUser({
           <button className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted transition">
 
             <Avatar className="h-8 w-8 rounded-md border">
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage src={user?.avatar} alt={user?.name} />
               <AvatarFallback className="bg-primary text-primary-foreground">
                 {fallbackInitials}
               </AvatarFallback>
@@ -76,7 +76,7 @@ export function NavUser({
 
             <div className="hidden sm:block text-left">
               <p className="text-sm font-medium leading-none">
-                {user.name}
+                {user?.name}
               </p>
               <p className="text-xs text-muted-foreground">
                 {portalName}
@@ -89,7 +89,7 @@ export function NavUser({
 
         <DropdownMenuContent align="end" className="w-56 rounded-lg">
           <DropdownMenuLabel>
-            {user.name}
+            {user?.name}
           </DropdownMenuLabel>
 
           <DropdownMenuSeparator />

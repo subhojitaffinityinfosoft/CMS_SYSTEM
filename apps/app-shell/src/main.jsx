@@ -10,7 +10,11 @@ import {
   AccountContextProvider,
   StorageContextProvider,
   FinancialYearContextProvider,
-  CompanyProvider
+  CompanyProvider,
+  CollegeContextProvider,
+  UnitContextProvider,
+  SeasonContextProvider,
+  ModuleContextProvider
 } from "shared-core";
 import { GlobalLoader } from "shared-api";
 
@@ -26,12 +30,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <AccountContextProvider>
           <FinancialYearContextProvider>
             <CompanyProvider>
-              <ApplicationMenuContextProvider>
-                <LoaderContextProvider>
-                  <GlobalLoader />
-                  <App />
-                </LoaderContextProvider>
-              </ApplicationMenuContextProvider>
+              <CollegeContextProvider>
+                <UnitContextProvider>
+                  <SeasonContextProvider>
+                    <ModuleContextProvider>
+                      <ApplicationMenuContextProvider>
+                        <LoaderContextProvider>
+                          <GlobalLoader />
+                          <App />
+                        </LoaderContextProvider>
+                      </ApplicationMenuContextProvider>
+                    </ModuleContextProvider>
+                  </SeasonContextProvider>
+                </UnitContextProvider>
+              </CollegeContextProvider>
             </CompanyProvider>
           </FinancialYearContextProvider>
         </AccountContextProvider>

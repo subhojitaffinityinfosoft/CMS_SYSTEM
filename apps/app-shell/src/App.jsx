@@ -3,10 +3,10 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import "shared-ui/index.css";
 import { AppLoader } from "shared-ui";
 
-import AdminLayout from "./layouts/AdminLayout";
-import TeacherLayout from "./layouts/TeacherLayout";
-import StudentLayout from "./layouts/Studentlayout";
 import MainLayout from "./layouts/MainLayout";
+import ERPShellLayout from "./layouts/ERPShellLayout";
+import CollegeSelection from "./pages/CollegeSelection";
+import ModuleSelection from "./pages/ModuleSelection";
 import CMSLayout from "./layouts/CMSLayout";
 import BadRequest from "./errorPage/404-bad-request";
 
@@ -35,34 +35,46 @@ const router = createBrowserRouter([
         element: <LoginScreen />,
       },
       {
-        path: "admin/*",
-        element: <AdminLayout />,
-        children: [
-          {
-            path: "*",
-            element: <AdminRouter />,
-          },
-        ],
+        path: "college-selection",
+        element: <CollegeSelection />,
       },
       {
-        path: "teacher/*",
-        element: <TeacherLayout />,
+        path: "app",
+        element: <ERPShellLayout />,
         children: [
           {
-            path: "*",
-            element: <TeacherRouter />,
+            path: "dashboard",
+            element: <ModuleSelection />
           },
-        ],
-      },
-      {
-        path: "student/*",
-        element: <StudentLayout />,
-        children: [
           {
-            path: "*",
-            element: <StudentRouter />,
+            path: "admission/*",
+            element: <AdminRouter /> // Mapping admin to admission temporarily
           },
-        ],
+          {
+            path: "master/*",
+            element: <AdminRouter /> // Reuse AdminRouter for master module mapping if needed
+          },
+          {
+            path: "student/*",
+            element: <StudentRouter />
+          },
+          {
+            path: "teacher/*",
+            element: <TeacherRouter />
+          },
+          {
+            path: "transaction/*",
+            element: <AdminRouter /> // Adjust mapping to appropriate module later
+          },
+          {
+            path: "reports/*",
+            element: <AdminRouter /> // Adjust mapping to appropriate module later
+          },
+          {
+            path: "",
+            element: <Navigate to="/app/dashboard" replace />
+          }
+        ]
       },
       {
         path: "cms-login",

@@ -9,13 +9,15 @@
   ],
 "scripts": {
     "build:remotes": "npm run build --workspace=apps/app-login --workspace=apps/mfe-admin --workspace=apps/mfe-teacher --workspace=apps/mfe-student --workspace=apps/mfe-cms",
+    "build:remotes:watch": "concurrently \"npm run build --workspace=apps/app-login -- --watch\" \"npm run build --workspace=apps/mfe-admin -- --watch\" \"npm run build --workspace=apps/mfe-teacher -- --watch\" \"npm run build --workspace=apps/mfe-student -- --watch\" \"npm run build --workspace=apps/mfe-cms -- --watch\"",
     "serve:login": "npm run preview --workspace=apps/app-login",
     "serve:admin": "npm run preview --workspace=apps/mfe-admin",
     "serve:teacher": "npm run preview --workspace=apps/mfe-teacher",
     "serve:student": "npm run preview --workspace=apps/mfe-student",
     "serve:cms": "npm run preview --workspace=apps/mfe-cms",
     "dev:shell": "npm run dev --workspace=apps/app-shell",
-    "start": "npm run build:remotes && concurrently -k -p \"[{name}]\" -n \"SHELL,LOGIN,ADMIN,TEACHER,STUDENT,CMS\" -c \"cyan,magenta,yellow,blue,green,red\" \"npm run dev:shell\" \"npm run serve:login\" \"npm run serve:admin\" \"npm run serve:teacher\" \"npm run serve:student\" \"npm run serve:cms\""
+    "start": "npm run build:remotes && concurrently -k -p \"[{name}]\" -n \"SHELL,LOGIN,ADMIN,TEACHER,STUDENT,CMS\" -c \"cyan,magenta,yellow,blue,green,red\" \"npm run dev:shell\" \"npm run serve:login\" \"npm run serve:admin\" \"npm run serve:teacher\" \"npm run serve:student\" \"npm run serve:cms\"",
+    "start:watch": "npm run build:remotes && concurrently -k -p \"[{name}]\" -n \"SHELL,LOGIN,ADMIN,TEACHER,STUDENT,CMS,WATCH\" -c \"cyan,magenta,yellow,blue,green,red,gray\" \"npm run dev:shell\" \"npm run serve:login\" \"npm run serve:admin\" \"npm run serve:teacher\" \"npm run serve:student\" \"npm run serve:cms\" \"npm run build:remotes:watch\""
   },
   "dependencies": {
     "@ag-media/react-pdf-table": "^1.0.1",

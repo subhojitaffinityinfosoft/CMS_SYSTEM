@@ -323,6 +323,15 @@ export default function FormComponent({ formField, onSubmit, submitBtnText = "Su
                                         </Popover>
                                     )}
 
+                                    {/* 9. CUSTOM COMPONENT */}
+                                    {field.type === "custom" && (
+                                        <FormControl>
+                                            <div className="w-full">
+                                                {field.render({ value: formControlProps.value, onChange: formControlProps.onChange })}
+                                            </div>
+                                        </FormControl>
+                                    )}
+
                                     <FormMessage className="text-destructive text-xs" />
                                 </FormItem>
                             )}

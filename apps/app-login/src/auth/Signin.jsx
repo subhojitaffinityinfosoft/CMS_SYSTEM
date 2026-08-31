@@ -2,11 +2,12 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Shield, GraduationCap, User, AlertCircle } from "lucide-react"
+import { Shield, GraduationCap, User, AlertCircle, ArrowRight, ArrowLeft } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Usersdata } from './UserMaster'
 import { EncryptText, SetStorage } from '@/lib/Storage'
 import FormComponent from "@/components/ux/FormComponent"
+import { UnitMultiSelect, SeasonSelector, Button } from "shared-ui"
 
 const tabs = [
   { value: "admin", label: "Admin", icon: Shield },
@@ -36,11 +37,19 @@ export default function PremiumLogin() {
   const navigate = useNavigate()
   const [role, setRole] = useState("admin")
   const [loginError, setLoginError] = useState(null)
+  
+  // Step tracking for 2-step login
+  const [step, setStep] = useState(1)
+  const [authenticatedUser, setAuthenticatedUser] = useState(null)
+
+  // Local state for unit and season selections (since MFE contexts don't share perfectly)
+  const [selectedUnits, setSelectedUnits] = useState([])
+  const [selectedSeason, setSelectedSeason] = useState(null)
 
   // 1. Define your dynamic form fields array
   const loginFormConfig = [
     {
-      acceseriesKey: "userName",
+      acceseriesKey: "username",
       label: "Username",
       placeholder: "Enter username",
       type: "input",
@@ -56,17 +65,18 @@ export default function PremiumLogin() {
   ]
 
   const handleTabChange = (val) => {
+    if (step === 2) return // prevent tab change in step 2
     setRole(val)
     setLoginError(null)
   }
 
-  // 2. Handle form submission
+  // 2. Handle initial credentials submission (Step 1)
   const onSubmit = (formData) => {
     // Merge selected tab role with inputs
     const data = { ...formData, userType: role }
 
     const user = Usersdata.find(
-      (u) => u.username === data.userName && u.password === data.password && u.userType === data.userType
+      (u) => u.username === data.username && u.password === data.password && u.userType === data.userType
     )
 
     if (!user) {
@@ -81,13 +91,45 @@ export default function PremiumLogin() {
     SetStorage(import.meta.env.VITE_ROLE, EncryptText(user.role))
     SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(user.subRole))
 
-    // Navigate to the correct dashboard based on user type
-    if (user.userType === "admin") {
-      navigate("/admin/dashboard")
-    } else if (user.userType === "teacher") {
-      navigate("/teacher/dashboard")
+    setAuthenticatedUser(user)
+    setStep(2) // Move to Unit & Season selection
+  }
+
+  // Configuration for Step 2 Form
+  const step2FormConfig = [
+    {
+      acceseriesKey: "selectedUnits",
+      label: "Select Unit(s)",
+      type: "custom",
+      render: ({ value, onChange }) => <UnitMultiSelect selectedUnits={value || []} onChange={onChange} />,
+      validation: z.array(z.any()).min(1, "*Select at least one Unit"),
+    },
+    {
+      acceseriesKey: "selectedSeason",
+      label: "Select Season",
+      type: "custom",
+      render: ({ value, onChange }) => <SeasonSelector selectedSeason={value || null} onChange={onChange} />,
+      validation: z.any().refine((val) => val !== null && val !== undefined, "*Season is required"),
+    }
+  ]
+
+  // 3. Handle final submission (Step 2)
+  const handleFinalSubmit = (formData) => {
+    const { selectedUnits, selectedSeason } = formData;
+
+    setLoginError(null)
+
+    // Save selections to localStorage so the app-shell contexts can pick them up upon reload
+    localStorage.setItem('selectedUnits', JSON.stringify(selectedUnits))
+    localStorage.setItem('selectedSeason', JSON.stringify(selectedSeason))
+
+    // Use window.location.href to force a full reload so MFE contexts initialize properly
+    if (authenticatedUser.userType === "admin") {
+      window.location.href = "/app/dashboard"
+    } else if (authenticatedUser.userType === "teacher") {
+      window.location.href = "/app/teacher/dashboard"
     } else {
-      navigate("/student/dashboard")
+      window.location.href = "/app/student/dashboard"
     }
   }
 
@@ -122,7 +164,7 @@ export default function PremiumLogin() {
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-md ml-auto rounded-2xl p-8 bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl text-gray-900"
+          className="w-full max-w-md ml-auto rounded-2xl p-8 bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl text-gray-900 overflow-hidden"
         >
           {/* CARD HEADER */}
           <div className="text-center mb-6 space-y-2">
@@ -132,11 +174,13 @@ export default function PremiumLogin() {
               </div>
             </div>
             <h2 className="text-2xl font-semibold">General College</h2>
-            <p className="text-gray-600 text-sm">Sign in to your account</p>
+            <p className="text-gray-600 text-sm">
+              {step === 1 ? "Sign in to your account" : "Complete your session setup"}
+            </p>
           </div>
 
           {/* ROLE SELECTOR TABS */}
-          <Tabs value={role} onValueChange={handleTabChange}>
+          <Tabs value={role} onValueChange={handleTabChange} className="mb-6">
             <TabsList className="grid grid-cols-3 h-14 p-1 rounded-xl bg-white/60 gap-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon
@@ -144,7 +188,8 @@ export default function PremiumLogin() {
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="flex items-center justify-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-600 hover:text-black data-[state=active]:!bg-primary data-[state=active]:!text-white"
+                    disabled={step === 2}
+                    className="flex items-center justify-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-gray-600 hover:text-black data-[state=active]:!bg-primary data-[state=active]:!text-white disabled:opacity-50"
                   >
                     <Icon className="w-4 h-4" />
                     {tab.label}
@@ -154,13 +199,62 @@ export default function PremiumLogin() {
             </TabsList>
           </Tabs>
 
+          <AnimatePresence mode="wait">
+            {step === 1 ? (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* 🔥 DYNAMIC FORM COMPONENT */}
+                <FormComponent
+                  formField={loginFormConfig}
+                  onSubmit={onSubmit}
+                  submitBtnText="Sign In"
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                <div className="bg-white/60 p-4 rounded-xl border border-white/40 mb-4">
+                  <FormComponent
+                    formField={step2FormConfig}
+                    onSubmit={handleFinalSubmit}
+                    submitBtnText="Proceed to Dashboard"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => {
+                      setStep(1)
+                      setLoginError(null)
+                    }} 
+                    className="w-full text-gray-600"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Back to Login
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Error Message */}
           <AnimatePresence>
             {loginError && (
               <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 className="flex items-center gap-2 mt-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm"
               >
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -168,13 +262,6 @@ export default function PremiumLogin() {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* 🔥 DYNAMIC FORM COMPONENT REPLACING MANUAL FORM FIELDS */}
-          <FormComponent
-            formField={loginFormConfig}
-            onSubmit={onSubmit}
-            submitBtnText="Sign In"
-          />
         </motion.div>
       </div>
     </div>
