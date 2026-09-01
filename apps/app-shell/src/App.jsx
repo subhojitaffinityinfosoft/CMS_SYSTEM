@@ -4,13 +4,11 @@ import "shared-ui/index.css";
 import { AppLoader } from "shared-ui";
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
-const ERPShellLayout = lazy(() => import("./layouts/ERPShellLayout"));
 const TeacherLayout = lazy(() => import("./layouts/TeacherLayout"));
 const StudentLayout = lazy(() => import("./layouts/Studentlayout"));
-const ModuleSelection = lazy(() => import("./pages/ModuleSelection"));
-const CMSLayout = lazy(() => import("./layouts/CMSLayout"));
 const BadRequest = lazy(() => import("./errorPage/404-bad-request"));
 const AdminModuleRoutes = lazy(() => import("./routes/AdminModuleRoutes"));
+const CMSModuleRoutes = lazy(() => import("./routes/CMSModuleRoutes"));
 
 // 🚀 HOC for Suspense
 const Loadable = (Component) => (props) => (
@@ -23,8 +21,6 @@ const Loadable = (Component) => (props) => (
 const LoginScreen = Loadable(lazy(() => import("app_login/Signin")));
 const TeacherRouter = Loadable(lazy(() => import("mfe_teacher/TeacherRouter")));
 const StudentRouter = Loadable(lazy(() => import("mfe_student/StudentRouter")));
-const CMSRouter = Loadable(lazy(() => import("mfe_cms/CMSRouter")));
-const CMSLogin = Loadable(lazy(() => import("mfe_cms/CMSLogin")));
 
 const router = createBrowserRouter([
   {
@@ -37,14 +33,8 @@ const router = createBrowserRouter([
         element: <LoginScreen />,
       },
 
-      // ─── Admin: dashboard (module picker) + all admin modules ─────────
+      // ─── Admin ─────────────────────────────────────────────────────────
       {
-        path: "admin/dashboard",
-        element: Loadable(ERPShellLayout)({}),
-        children: [{ path: "", element: Loadable(ModuleSelection)({}) }],
-      },
-      {
-        // All other admin sub-paths delegate to AdminModuleRoutes
         path: "admin/*",
         element: Loadable(AdminModuleRoutes)({}),
       },
@@ -65,13 +55,8 @@ const router = createBrowserRouter([
 
       // ─── CMS ──────────────────────────────────────────────────────────
       {
-        path: "cms-login",
-        element: <CMSLogin />,
-      },
-      {
         path: "cms/*",
-        element: Loadable(CMSLayout)({}),
-        children: [{ path: "*", element: <CMSRouter /> }],
+        element: Loadable(CMSModuleRoutes)({}),
       },
 
       // ─── Fallbacks ────────────────────────────────────────────────────

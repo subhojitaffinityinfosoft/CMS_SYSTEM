@@ -27,6 +27,7 @@ export default function CMSLogin() {
       SetStorage(import.meta.env.VITE_LOGIN_STATUS, EncryptText("true"));
       SetStorage(import.meta.env.VITE_ROLE, EncryptText(dummyUser.role));
       SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(dummyUser.subRole));
+      SetStorage(import.meta.env.VITE_AU_TK, EncryptText("tok_cms_provider_xyz"));
       
       // Navigate to the CMS dashboard
       navigate("/cms/dashboard");

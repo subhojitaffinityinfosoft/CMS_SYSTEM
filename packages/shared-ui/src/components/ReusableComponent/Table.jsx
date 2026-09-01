@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge"
 import { NavLink } from "react-router-dom"
 import { EncryptText } from "@/lib/Storage"
 import uuid4 from "uuid4"
+import PaginationTbleComponent from "./PaginateTable"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -63,7 +64,11 @@ export function Tables({
     onPresssReportingApprove,
     onPressDocumentDetails,
     onPresssStatusUpdate,
-    isDisabledDependOnIsActive = false
+    isDisabledDependOnIsActive = false,
+    totalRecords,
+    payload,
+    onPainateClick,
+    setPayload
 }) {
 
     const [columnFilters, setColumnFilters] = useState(
@@ -427,34 +432,42 @@ export function Tables({
                 </TableBody>
             </Table>
             {
-                hidePagination && <div className="flex items-center justify-end mt-2 gap-2 px-5" >
+                (hidePagination && payload && setPayload && typeof totalRecords !== 'undefined') ? (
+                    <PaginationTbleComponent
+                        totalRecords={totalRecords}
+                        payload={payload}
+                        onPainateClick={onPainateClick}
+                        setPayload={setPayload}
+                    />
+                ) : hidePagination && (
+                    <div className="flex items-center justify-end mt-2 gap-2 px-5" >
+                        <Button variant="ghost" size="icon"
+                            onClick={() => table.setPageIndex(0)}
+                            className="rounded-full">
+                            <ChevronsLeftIcon className="h-[1rem] w-[1rem]  transition-all text-primary" />
+                        </Button>
+                        <Button variant="default" onClick={() => {
+                            table.previousPage();
+                        }}
+                            disabled={!table.getCanPreviousPage()} className="rounded-sm h-8 text-xs">
+                            Previous
+                        </Button>
 
-                    <Button variant="ghost" size="icon"
-                        onClick={() => table.setPageIndex(0)}
-                        className="rounded-full">
-                        <ChevronsLeftIcon className="h-[1rem] w-[1rem]  transition-all text-primary" />
-                    </Button>
-                    <Button variant="default" onClick={() => {
-                        table.previousPage();
-                    }}
-                        disabled={!table.getCanPreviousPage()} className="rounded-sm h-8 text-xs">
-                        Previous
-                    </Button>
-
-                    <Button variant="default" onClick={() => {
-                        table.nextPage();
-                    }}
-                        disabled={!table.getCanNextPage()}
-                        className="rounded-sm h-8 text-xs">
-                        Next
-                    </Button>
-                    <Button size="icon"
-                        variant="ghost"
-                        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                        className="rounded-full" >
-                        <LucideChevronsRight className="h-[1rem] w-[1rem]  transition-all text-primary" />
-                    </Button>
-                </div>
+                        <Button variant="default" onClick={() => {
+                            table.nextPage();
+                        }}
+                            disabled={!table.getCanNextPage()}
+                            className="rounded-sm h-8 text-xs">
+                            Next
+                        </Button>
+                        <Button size="icon"
+                            variant="ghost"
+                            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                            className="rounded-full" >
+                            <LucideChevronsRight className="h-[1rem] w-[1rem]  transition-all text-primary" />
+                        </Button>
+                    </div>
+                )
             }
 
 

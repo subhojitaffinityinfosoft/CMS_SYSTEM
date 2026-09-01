@@ -2,6 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import { fileURLToPath, URL } from "url";
+import path from "path";
+
+const appDir = path.dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = path.resolve(appDir, "../..");
 
 const sharedDependencies = [
   "react",
@@ -11,6 +15,7 @@ const sharedDependencies = [
 ];
 
 export default defineConfig({
+  envDir: workspaceRoot,
   server: {
     port: 5004, // mfe-cms will run on 5004
   },

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
     buildPortalSessionOptions,
     createPortalUser,
@@ -15,7 +15,7 @@ import {
     useModule,
 } from "shared-core";
 import StorageContext from "shared-core/context/storage/StorageContext";
-import { getStorageData, removeItemFromStorage } from "@/lib/Storage";
+import { getStorageData, removeItemFromStorage } from "shared-ui/lib/Storage";
 import { AdminHeader } from "shared-ui";
 
 const storageKeysToClear = ["VITE_AU_TK", "VITE_COMP_NAME", "VITE_ROLE_ID", "VITE_USER_ID", "VITE_USER_TYPE", "VITE_EMPLOYEE_ID"];
@@ -30,6 +30,7 @@ const getResolvedTheme = (theme) => {
 
 const AdminLayout = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { theme, setTheme } = useTheme();
     const { acc_dtls, setAccDtls } = useAccount();
     const { finYear, setFinancialYear, setFinancialYearDtls } = useFinancialYear();
@@ -48,6 +49,16 @@ const AdminLayout = () => {
         }
     }, [defaultSession, finYear, setFinancialYear, setFinancialYearDtls]);
 
+    // Check for authentication
+    React.useEffect(() => {
+        const role = getStorageData(import.meta.env.VITE_ROLE);
+        const token = getStorageData(import.meta.env.VITE_AU_TK);
+        // If there's no role or token, redirect to main login
+        if (!role || !token) {
+            navigate("/login", { replace: true });
+        }
+    }, [navigate]);
+
     const companyName = config?.companyName || getStorageData(import.meta.env.VITE_COMP_NAME) || "General College";
     const currentUser = React.useMemo(
         () => createPortalUser({ user: acc_dtls, portal, companyName }),
@@ -58,7 +69,7 @@ const AdminLayout = () => {
     const pathParts = location.pathname.split('/').filter(Boolean);
     const moduleId = pathParts[1] || '';
     const moduleName = moduleId.charAt(0).toUpperCase() + moduleId.slice(1);
-    
+
     // Get dynamic color from module config
     const activeModule = getModuleById(moduleId);
     const moduleColor = activeModule?.color || "#134074";
@@ -107,8 +118,8 @@ const AdminLayout = () => {
             if (envKey) removeItemFromStorage(envKey);
         });
         localStorage.clear();
-        window.location.href = "/login";
-    }, [setAccDtls, setAuthenticatedKey, setFinancialYear, setFinancialYearDtls]);
+        navigate("/login", { replace: true });
+    }, [navigate, setAccDtls, setAuthenticatedKey, setFinancialYear, setFinancialYearDtls]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-muted/20">
@@ -135,9 +146,9 @@ const AdminLayout = () => {
             </div>
 
             {/* ── HORIZONTAL MEGA MENU (Replacing Sidebar) ────── */}
-            <ModuleMenuBar 
-                moduleColor={moduleColor} 
-                menuItems={activeMenuItems} 
+            <ModuleMenuBar
+                moduleColor={moduleColor}
+                menuItems={activeMenuItems}
             />
 
             {/* ── SCROLLABLE CONTENT ────────────────── */}

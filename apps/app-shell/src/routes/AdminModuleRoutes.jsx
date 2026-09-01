@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AppLoader } from "shared-ui";
 import AdminLayout from "../layouts/AdminLayout";
+import ERPShellLayout from "../layouts/ERPShellLayout";
+import ModuleSelection from "../pages/ModuleSelection";
 
 const Loadable = (Component) => (props) => (
   <Suspense fallback={<AppLoader />}>
@@ -22,6 +24,10 @@ const StudentRouter = Loadable(lazy(() => import("mfe_student/StudentRouter")));
 export default function AdminModuleRoutes() {
   return (
     <Routes>
+      <Route element={<ERPShellLayout />}>
+        <Route path="dashboard" element={<ModuleSelection />} />
+      </Route>
+      
       {/* Each module gets AdminLayout as its wrapper (uses <Outlet> internally) */}
       <Route element={<AdminLayout />}>
         <Route path="student/*" element={<StudentRouter />} />

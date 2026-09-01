@@ -21,8 +21,7 @@ import {
     useUnit
 } from "shared-core";
 import StorageContext from "shared-core/context/storage/StorageContext";
-import { getStorageData, removeItemFromStorage } from "@/lib/Storage";
-
+import { getStorageData, removeItemFromStorage } from "shared-ui/lib/Storage";
 const storageKeysToClear = [
     "VITE_AU_TK",
     "VITE_COMP_NAME",
@@ -70,6 +69,16 @@ const CMSLayout = () => {
             setFinancialYearDtls(defaultSession);
         }
     }, [defaultSession, finYear, setFinancialYear, setFinancialYearDtls]);
+
+    // Check for authentication
+    React.useEffect(() => {
+        const role = getStorageData(import.meta.env.VITE_ROLE);
+        const token = getStorageData(import.meta.env.VITE_AU_TK);
+        // If there's no role or token, redirect to CMS login
+        if (!role || !token) {
+            navigate("/cms/login", { replace: true });
+        }
+    }, [navigate]);
 
     // For CMS, we force the company name to reflect the Provider if needed, but we'll use config
     const companyName = config?.companyName || getStorageData(import.meta.env.VITE_COMP_NAME) || portal.companyFallback;
@@ -129,7 +138,7 @@ const CMSLayout = () => {
         });
 
         // Redirect CMS provider to the CMS login instead of general login
-        navigate("/cms-login");
+        navigate("/cms/login");
     }, [navigate, setAccDtls, setAuthenticatedKey, setFinancialYear, setFinancialYearDtls]);
 
     return (

@@ -11,6 +11,7 @@ const sharedCoreSrc = path.resolve(workspaceRoot, "packages/shared-core/src");
 const sharedApiSrc = path.resolve(workspaceRoot, "packages/shared-api/src");
 
 export default defineConfig({
+  envDir: workspaceRoot,
   server: {
     port: 3000,
     strictPort: true,

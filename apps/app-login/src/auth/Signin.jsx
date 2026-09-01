@@ -8,7 +8,7 @@ import {
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Usersdata } from './UserMaster'
-import { EncryptText, SetStorage } from '@/lib/Storage'
+import { SetStorage, EncryptText } from "shared-ui/lib/Storage"
 import FormComponent from "@/components/ux/FormComponent"
 import { UnitMultiSelect, SeasonSelector, Button } from "shared-ui"
 import { z as zod } from "zod"
@@ -85,6 +85,7 @@ export default function PremiumLogin() {
     SetStorage(import.meta.env.VITE_USER_TYPE, EncryptText(user.userType))
     SetStorage(import.meta.env.VITE_ROLE, EncryptText(user.role))
     SetStorage(import.meta.env.VITE_SUBROLE, EncryptText(user.subRole))
+    SetStorage(import.meta.env.VITE_AU_TK, EncryptText(user.token))
     setAuthenticatedUser(user)
     setStep(2)
   }
@@ -103,11 +104,11 @@ export default function PremiumLogin() {
     localStorage.setItem('selectedSeason', JSON.stringify(selectedSeason))
 
     if (authenticatedUser.userType === "admin") {
-      window.location.href = "/admin/dashboard"
+      navigate("/admin/dashboard", { replace: true })
     } else if (authenticatedUser.userType === "teacher") {
-      window.location.href = "/teacher/dashboard"
+      navigate("/teacher/dashboard", { replace: true })
     } else {
-      window.location.href = "/student/dashboard"
+      navigate("/student/dashboard", { replace: true })
     }
   }
 
